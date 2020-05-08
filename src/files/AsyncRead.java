@@ -1,4 +1,4 @@
-package files;
+package src.files;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
