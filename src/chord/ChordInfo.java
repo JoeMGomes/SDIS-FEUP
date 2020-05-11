@@ -1,49 +1,49 @@
 package src.chord;
 
-import java.math.BigInteger;
+import java.io.Serializable;
 
-public class ChordInfo {
+public class ChordInfo implements Serializable {
     
-    // private BigInteger hashKey;
-    // private String ip;
-    // private int port;
+    private int hashKey;
+    private String ip;
+    private int port;
 
-    // public ChordInfo(BigInteger hashKey, String ip, int port){
-    //     this.ip = ip;
-    //     this.port = port;
-    //     this.hashKey = hashKey;
-    // }
+    public ChordInfo(String ip, int port){
+        this.ip = ip;
+        this.port = port;
+        this.hashKey = ChordNode.hashString(this.ip + this.port);
+    }
 
-    // //Getters and Setters bellow this line
-    // public BigInteger getHashKey() {
-    //     return this.hashKey;
-    // }
+    //Getters and Setters bellow this line
+    public int getHashKey() {
+        return this.hashKey;
+    }
 
-    // public void setHashKey(BigInteger hashKey) {
-    //     this.hashKey = hashKey;
-    // }
+    public void setHashKey(int hashKey) {
+        this.hashKey = hashKey;
+    }
 
-    // public String getIp() {
-    //     return this.ip;
-    // }
+    public String getIp() {
+        return this.ip;
+    }
 
-    // public void setIp(String ip) {
-    //     this.ip = ip;
-    // }
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
     
-    // public String toString() {
-    //     return "{" +
-    //         " hashKey='" + hashKey + "'" +
-    //         ", ip='" + ip + "'" +
-    //         ", port='" + port + "'" +
-    //         "}";
-    // }
+    public String toString() {
+        return "{" +
+            " hashKey='" + hashKey + "'" +
+            ", ip='" + ip + "'" +
+            ", port='" + port + "'" +
+            "}";
+    }
 
-    // public int getPort() {
-    //     return this.port;
-    // }
+    public int getPort() {
+        return this.port;
+    }
 
-    // public void setPort(int port) {
-    //     this.port = port;
-    // }
+    public void setPort(int port) {
+        this.port = port;
+    }
 }

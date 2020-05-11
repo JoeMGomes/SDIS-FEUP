@@ -2,7 +2,6 @@ package src.messages;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
@@ -47,6 +46,9 @@ public class MessageReceiver implements Runnable {
         SSLSocket clientSocket = null;
 
         while (true) {
+
+        receivedMessage = null;
+        clientSocket = null;
 
             try {
                 clientSocket = (SSLSocket) serverSocket.accept();

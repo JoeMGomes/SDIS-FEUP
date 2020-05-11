@@ -2,7 +2,6 @@ package src.messages;
 
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
-
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -27,7 +26,7 @@ public class MessageSender {
         SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
         SSLSocket clientSocket;
         try {
-            clientSocket = (SSLSocket) socketFactory.createSocket(InetAddress.getByName(message.getIpAdress()), message.getPort());
+            clientSocket = (SSLSocket) socketFactory.createSocket(InetAddress.getByName(message.getIpAddress()), message.getPort());
             clientSocket.startHandshake();
 
             ObjectOutputStream outToServer = new ObjectOutputStream(clientSocket.getOutputStream());

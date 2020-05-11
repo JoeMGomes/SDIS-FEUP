@@ -1,23 +1,33 @@
 package src.chord;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import src.messages.FindSuccessor;
+import src.messages.MessageSender;
+
 public class ChordNode {
-    // private final static int mBits = 6;
-    // private ArrayList<ChordInfo> fingerTable = new ArrayList<ChordInfo>();
-    // private ChordInfo predecessor;
-    // private int nodeHash;
+    public final static int mBits = 6;
+    private ArrayList<ChordInfo> fingerTable = new ArrayList<ChordInfo>();
+    private ChordInfo predecessor;
+    public ChordInfo nodeInfo;
 
-    // public ChordNode() {
+    public ChordNode(ChordInfo node,String ip, int port) {
+        this.nodeInfo = new ChordInfo(ip, port);
+        this.join(node);
 
-    // }
+    }
 
-    // public void join(ChordNode n1) {
-    //     this.predecessor = null;
-    //     //TCP MESSAGE
-    //     this.setFinger(n1.findSuccessor(this.getNodeHash()), 0 );
-    // }
+    public void join(ChordInfo n1) {
+        this.predecessor = null;
+        FindSuccessor f = new FindSuccessor(n1.getIp(), n1.getPort(), getNodeInfo(), getNodeInfo());
+        MessageSender sender = new MessageSender(f);
+        sender.send();
+    }
 
     // public void stabilize() {
     //     //TCP MESSAGE
@@ -44,59 +54,55 @@ public class ChordNode {
     //     //Move to Runnable class
     // }
 
-    // // TODO: Really an in id? Ver melhor
-    // public ChordInfo findSucessor(int id) {
-
-    //     if (id > this.key || id <= this.getFinger(0).getNodeHash()) {
-    //         return this.getFinger(0);
-    //     } else {
-    //         ChordNode n1 = this.closestPrecedingNode(id);
-    //         //TCP MESSAGE
-    //         return n1.findSucessor(id);
-    //     }
-    // }
-
-    // private ChordNode closestPrecedingNode(int id) {
-
-    //     for (int i = mBits; i > 0; i--) {
-    //         // TODO: verificar se é >= ou só >
-    //         if (this.getFinger(i).getNodeHash() > this.getNodeHash() || this.getFinger(i).getNodeHash() < id)
-    //             return this.getFinger(i);
-    //     }
-
-    //     return this;
-    // }
-
     // // Getters and setters bellow this line
 
-    // public int getNodeHash() {
-    //     return this.nodeHash;
-    // }
+    public ChordInfo getNodeInfo(){
+        return this.nodeInfo;
+    }
 
-    // public void setNodeHash(int nodeHash) {
-    //     this.nodeHash = nodeHash;
-    // }
+    public int getNodeHash() {
+        return this.nodeInfo.getHashKey();
+    }
 
-    // public ArrayList<ChordInfo> getFingerTable() {
-    //     return this.fingerTable;
-    // }
+    public ArrayList<ChordInfo> getFingerTable() {
+        return this.fingerTable;
+    }
 
-    // public void setFingerTable(ArrayList<ChordInfo> fingerTable) {
-    //     this.fingerTable = fingerTable;
-    // }
+    public void setFingerTable(ArrayList<ChordInfo> fingerTable) {
+        this.fingerTable = fingerTable;
+    }
 
-    // public ChordInfo getPredecessor() {
-    //     return this.predecessor;
-    // }
+    public ChordInfo getPredecessor() {
+        return this.predecessor;
+    }
 
-    // public void setPredecessor(ChordInfo predecessor) {
-    //     this.predecessor = predecessor;
-    // }
+    public void setPredecessor(ChordInfo predecessor) {
+        this.predecessor = predecessor;
+    }
 	
-    // public ChordInfo getFinger(int i){
-    //     return this.getFingerTable().get(i);
-    // }
-    // public void setFinger(ChordInfo info, int i){
-    //     this.getFingerTable().set(i, info);
-    // }
+    public ChordInfo getFinger(int i){
+        return this.getFingerTable().get(i);
+    }
+    public void setFinger(ChordInfo info, int i){
+        this.getFingerTable().set(i, info);
+    }
+
+    public static int hashString(String s){
+        return Math.floorMod(encryptSha1(s), (int) Math.pow(2,mBits));
+    }
+
+    public static int encryptSha1(String s){
+        MessageDigest digest = null;
+
+        try {
+            digest = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        byte[] hash = digest.digest(s.getBytes(StandardCharsets.UTF_8));
+        ByteBuffer wrapped = ByteBuffer.wrap(hash);
+
+		return wrapped.getInt();
+    }
 }
