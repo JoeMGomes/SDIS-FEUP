@@ -1,93 +1,102 @@
 package src.chord;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class ChordNode {
+    // private final static int mBits = 6;
+    // private ArrayList<ChordInfo> fingerTable = new ArrayList<ChordInfo>();
+    // private ChordInfo predecessor;
+    // private int nodeHash;
 
-    private ChordNode[] finger;
-    private ChordNode predecessor;
-    private ChordNode successor;
-    private static int mbits;
-    private int key;
+    // public ChordNode() {
 
-    public ChordNode() {
+    // }
 
-    }
+    // public void join(ChordNode n1) {
+    //     this.predecessor = null;
+    //     //TCP MESSAGE
+    //     this.setFinger(n1.findSuccessor(this.getNodeHash()), 0 );
+    // }
 
-    public void join(ChordNode n1) {
-        this.predecessor = null;
-        //TCP MESSAGE
-        this.successor = n1.findSuccessor(this.getkey());
-    }
+    // public void stabilize() {
+    //     //TCP MESSAGE
+    //     ChordInfo x = this.getFinger(0).getPredecessor();
 
-    public void stabilize() {
-        //TCP MESSAGE
-        ChordNode x = successor.getPredecessor();
+    //     if (x.getNodeHash() > this.getNodeHash() || x.getNodeHash() < this.getFinger(0).getNodeHash()) {
+    //         this.setFinger(x,0);
+    //     }
+    //     //TCP MESSAGE
+    //     this.getFinger(0).notifyNode(this);
+    // }
 
-        if (x.getkey() > this.getkey() || x.getkey() < successor.getkey()) {
-            successor = x;
-        }
-        //TCP MESSAGE
-        successor.notifyNode(this);
-    }
+    // public void notifyNode(ChordNode n1) {
+    //     //TCP MESSAGE
+    //     int n1Key = n1.getNodeHash();
 
-    public void notifyNode(ChordNode n1) {
-        //TCP MESSAGE
-        int n1Key = n1.getkey();
+    //     if(this.predecessor == null || n1Key > predecessor.getNodeHash() || n1Key < this.getNodeHash()){
+    //         this.predecessor = n1;
+    //     }
+    // }
 
-        if(this.predecessor == null || n1Key > predecessor.getkey() || n1Key < this.getkey()){
-            this.predecessor = n1;
-        }
-    }
+    // public void fixFingers(){
+    //     //TODO Dunno what is "next"
+    //     //Move to Runnable class
+    // }
 
-    public void fixFingers(){
-        //TODO Dunno what is "next"
+    // // TODO: Really an in id? Ver melhor
+    // public ChordInfo findSucessor(int id) {
 
-    }
+    //     if (id > this.key || id <= this.getFinger(0).getNodeHash()) {
+    //         return this.getFinger(0);
+    //     } else {
+    //         ChordNode n1 = this.closestPrecedingNode(id);
+    //         //TCP MESSAGE
+    //         return n1.findSucessor(id);
+    //     }
+    // }
 
-    // TODO: Really an in id? Ver melhor
-    public ChordNode findSuccessor(int id) {
+    // private ChordNode closestPrecedingNode(int id) {
 
-        if (id > this.key || id <= successor.getkey()) {
-            return successor;
-        } else {
-            ChordNode n1 = this.closestPrecedingNode(id);
-            //TCP MESSAGE
-            return n1.findSuccessor(id);
-        }
-    }
+    //     for (int i = mBits; i > 0; i--) {
+    //         // TODO: verificar se é >= ou só >
+    //         if (this.getFinger(i).getNodeHash() > this.getNodeHash() || this.getFinger(i).getNodeHash() < id)
+    //             return this.getFinger(i);
+    //     }
 
-    private ChordNode closestPrecedingNode(int id) {
+    //     return this;
+    // }
 
-        for (int i = mbits; i > 0; i--) {
-            // TODO: verificar se é >= ou só >
-            if (finger[i].getkey() > this.getkey() || finger[i].getkey() < id)
-                return finger[i];
-        }
+    // // Getters and setters bellow this line
 
-        return this;
-    }
+    // public int getNodeHash() {
+    //     return this.nodeHash;
+    // }
 
-    // Getters and setters bellow this line
-    public ChordNode[] getFingerTable() {
-        return this.finger;
-    }
+    // public void setNodeHash(int nodeHash) {
+    //     this.nodeHash = nodeHash;
+    // }
 
-    public void setFingerTable(ChordNode[] finger) {
-        this.finger = finger;
-    }
+    // public ArrayList<ChordInfo> getFingerTable() {
+    //     return this.fingerTable;
+    // }
 
-    public ChordNode getPredecessor() {
-        return this.predecessor;
-    }
+    // public void setFingerTable(ArrayList<ChordInfo> fingerTable) {
+    //     this.fingerTable = fingerTable;
+    // }
 
-    public void setPredecessor(ChordNode predecessor) {
-        this.predecessor = predecessor;
-    }
+    // public ChordInfo getPredecessor() {
+    //     return this.predecessor;
+    // }
 
-    public int getkey() {
-        return this.key;
-    }
-
-    public void setkey(int key) {
-        this.key = key;
-    }
+    // public void setPredecessor(ChordInfo predecessor) {
+    //     this.predecessor = predecessor;
+    // }
+	
+    // public ChordInfo getFinger(int i){
+    //     return this.getFingerTable().get(i);
+    // }
+    // public void setFinger(ChordInfo info, int i){
+    //     this.getFingerTable().set(i, info);
+    // }
 }
