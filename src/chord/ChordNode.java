@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import src.messages.FindSuccessor;
 import src.messages.MessageSender;
@@ -24,10 +23,24 @@ public class ChordNode {
 
     public void join(ChordInfo n1) {
         this.predecessor = null;
-        FindSuccessor f = new FindSuccessor(n1.getIp(), n1.getPort(), getNodeInfo(), getNodeInfo());
+        FindSuccessor f = new FindSuccessor(n1.getIp(), n1.getPort(), getNodeInfo(), getNodeInfo(), false);
         MessageSender sender = new MessageSender(f);
         sender.send();
     }
+
+    public ChordInfo closestPrecedingNode(int hashKey) {
+
+        for (int i = ChordNode.mBits; i > 0; i--) {
+        
+            if (getFinger(i).getHashKey() > getNodeHash() || 
+            getFinger(i).getHashKey() < hashKey)
+                return getFinger(i);
+        }
+
+        return getNodeInfo();
+    }
+
+    
 
     // public void stabilize() {
     //     //TCP MESSAGE
@@ -49,13 +62,7 @@ public class ChordNode {
     //     }
     // }
 
-    // public void fixFingers(){
-    //     //TODO Dunno what is "next"
-    //     //Move to Runnable class
-    // }
-
-    // // Getters and setters bellow this line
-
+    // Getters and setters bellow this line
     public ChordInfo getNodeInfo(){
         return this.nodeInfo;
     }

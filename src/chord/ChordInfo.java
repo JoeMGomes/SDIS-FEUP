@@ -14,6 +14,11 @@ public class ChordInfo implements Serializable {
         this.hashKey = ChordNode.hashString(this.ip + this.port);
     }
 
+    public ChordInfo(int hashKey){
+        this.hashKey = hashKey;
+    }
+
+
     //Getters and Setters bellow this line
     public int getHashKey() {
         return this.hashKey;
@@ -33,7 +38,6 @@ public class ChordInfo implements Serializable {
     
     public String toString() {
         return "{" +
-            " hashKey='" + hashKey + "'" +
             ", ip='" + ip + "'" +
             ", port='" + port + "'" +
             "}";
