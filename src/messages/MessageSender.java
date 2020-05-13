@@ -15,7 +15,7 @@ public class MessageSender {
     }
 
     private void setSocketProperties() {
-        System.setProperty("javax.net.ssl.keyStore", "src/client.keys");
+        System.setProperty("javax.net.ssl.keyStore", "src/server.keys");
         System.setProperty("javax.net.ssl.keyStorePassword", "123456");
         System.setProperty("javax.net.ssl.trustStore", "src/truststore");
         System.setProperty("javax.net.ssl.trustStorePassword", "123456");

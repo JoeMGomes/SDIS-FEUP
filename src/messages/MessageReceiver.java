@@ -2,19 +2,31 @@ package src.messages;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
+
+import src.CLI.Peer;
 
 public class MessageReceiver implements Runnable {
 
     private SSLServerSocket serverSocket;
     private int port;
+    private ScheduledExecutorService executor;
 
     public MessageReceiver(int port) {
         this.port = port;
         this.setSocketProperties();
         this.createSocket();
+        executor = Executors.newScheduledThreadPool(50);
+    }
+
+    public int getPort() {
+        return this.port;
     }
 
     private void setSocketProperties() {
@@ -30,6 +42,7 @@ public class MessageReceiver implements Runnable {
 
         try {
             serverSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(port);
+            this.port = serverSocket.getLocalPort();
             serverSocket.setNeedClientAuth(true);
             serverSocket.setEnabledProtocols(serverSocket.getSupportedProtocols());
             System.out.println("SSL Server Socket created");
@@ -47,8 +60,8 @@ public class MessageReceiver implements Runnable {
 
         while (true) {
 
-        receivedMessage = null;
-        clientSocket = null;
+            receivedMessage = null;
+            clientSocket = null;
 
             try {
                 clientSocket = (SSLSocket) serverSocket.accept();
@@ -73,16 +86,19 @@ public class MessageReceiver implements Runnable {
                     } catch (ClassNotFoundException e) {
                         System.out.println("Error reading message (Class Not Found)");
                         e.printStackTrace();
-                    } catch (IOException e){
+                    } catch (IOException e) {
                         System.out.println("Error reading message (IOException)");
                         e.printStackTrace();
                     }
                 }
             }
 
-            // Por isto num thread
-            ((Message) receivedMessage).handle();
-        
+            Message e = (Message) receivedMessage;
+            Peer.log("Received from " + e.getSender().getIp() + ':' + e.getSender().getPort());
+
+            // TODO Por isto num thread
+            executor.schedule(new Thread(() -> e.handle()), 0, TimeUnit.SECONDS);
+
         }
 
     }

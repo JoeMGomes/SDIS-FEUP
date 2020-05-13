@@ -14,8 +14,12 @@ public class SuccessorMessage extends Message {
 
     @Override
     public void handle() {
-        System.out.println("Sucessor was set to: " + successorInfo.toString());
+        Peer.log("Sucessor was set to: " + successorInfo.toString());
         Peer.chordNode.setFinger(successorInfo, 0);
+        NotifyMessage message = new NotifyMessage(successorInfo.getIp(), successorInfo.getPort(),
+                    Peer.chordNode.getNodeInfo());
+        MessageSender sender = new MessageSender(message);
+        sender.send();
     }
     
 }

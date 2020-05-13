@@ -14,10 +14,14 @@ public class FixFingerMessage extends Message {
 
     @Override
     public void handle() {
+        try {
+            Peer.log("SETTING FINGER " + successorInfo.toString());
+            Peer.chordNode.setFinger(successorInfo, Peer.fixFingers.getNextFinger());
+            Peer.log("Finger was set to: " + successorInfo.toString());
 
-        
-        Peer.chordNode.setFinger(successorInfo, Peer.chordNode.getNextFinger());
-        System.out.println("Finger was set to: " + successorInfo.toString());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
     
 }

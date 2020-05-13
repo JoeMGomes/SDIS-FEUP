@@ -4,25 +4,32 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.Collections;
 
 import src.messages.FindSuccessor;
 import src.messages.MessageSender;
+import src.CLI.Peer;
 
 public class ChordNode {
     public final static int mBits = 6;
-    private ArrayList<ChordInfo> fingerTable = new ArrayList<ChordInfo>();
+    private List<ChordInfo> fingerTable = Collections.synchronizedList(new ArrayList<ChordInfo>()); ;
     private ChordInfo predecessor;
     public ChordInfo nodeInfo;
 
     public ChordNode(ChordInfo node,String ip, int port) {
         this.nodeInfo = new ChordInfo(ip, port);
-        this.join(node);
-
+        for (int i =0; i < mBits; i++) {
+            fingerTable.add(nodeInfo);
+        }
+        if (node != null) {
+            this.join(node);
+        }
     }
 
     public void join(ChordInfo n1) {
         this.predecessor = null;
+        Peer.log("Sending FindSuccessor in ChordNode to " + n1.getIp() + ':' + n1.getPort());
         FindSuccessor f = new FindSuccessor(n1.getIp(), n1.getPort(), getNodeInfo(), getNodeInfo(), false);
         MessageSender sender = new MessageSender(f);
         sender.send();
@@ -71,11 +78,11 @@ public class ChordNode {
         return this.nodeInfo.getHashKey();
     }
 
-    public ArrayList<ChordInfo> getFingerTable() {
+    public List<ChordInfo> getFingerTable() {
         return this.fingerTable;
     }
 
-    public void setFingerTable(ArrayList<ChordInfo> fingerTable) {
+    public void setFingerTable(List<ChordInfo> fingerTable) {
         this.fingerTable = fingerTable;
     }
 
@@ -88,6 +95,9 @@ public class ChordNode {
     }
 	
     public ChordInfo getFinger(int i){
+        if (i >= getFingerTable().size()) {
+            return null;
+        }
         return this.getFingerTable().get(i);
     }
     public void setFinger(ChordInfo info, int i){

@@ -18,15 +18,19 @@ public class FindSuccessor extends Message {
     @Override
     public void handle() {
 
+        try {
+
         if (nodeToFindSuccessor.getHashKey() > Peer.chordNode.getNodeHash() ||
         nodeToFindSuccessor.getHashKey() <= Peer.chordNode.getFinger(0).getHashKey()) {
             Message message;
 
             if(toFixFinger){
+                Peer.log("Sending FixFingerMessage to " + getSender().getIp() + ':' + getSender().getPort());
                 //Sends Sucessor Message to original asker
                 message = new FixFingerMessage(getSender().getIp(), getSender().getPort(), Peer.chordNode.getNodeInfo(),Peer.chordNode.getFinger(0));
             }
             else{
+                Peer.log("Sending Sucerror Message");
                 //Sends Sucessor Message to original asker
                 message = new SuccessorMessage(getSender().getIp(), getSender().getPort(), Peer.chordNode.getNodeInfo(),Peer.chordNode.getFinger(0) );
             }
@@ -34,12 +38,16 @@ public class FindSuccessor extends Message {
             MessageSender sender = new MessageSender(message);
             sender.send();
         } else {
+            Peer.log("Sending FindSucessor");
             //Forward FindSucessor Message to best Peer
             ChordInfo n1 = Peer.chordNode.closestPrecedingNode(nodeToFindSuccessor.getHashKey());
-            FindSuccessor message = new FindSuccessor(n1.getIp(), n1.getPort(), getSender(), nodeToFindSuccessor, false);
+            FindSuccessor message = new FindSuccessor(n1.getIp(), n1.getPort(), getSender(), nodeToFindSuccessor, this.toFixFinger);
             MessageSender sender = new MessageSender(message);
             sender.send();
         }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 
     }
 

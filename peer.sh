@@ -1,3 +1,3 @@
 #!/bin/bash
 
-java -classpath bin src.CLI.TestPeer
+java -classpath bin src.CLI.Peer
