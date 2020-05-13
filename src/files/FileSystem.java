@@ -1,5 +1,7 @@
 package src.files;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -26,6 +28,16 @@ class FileSystem {
 
         // idk what to do with completion handler
         AsyncRead.read(path, null);
+    }
+
+    public void delete(String name) {
+        Path path = Paths.get(rootFolder, defaultFiles, name);
+
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
     }
     
 }
