@@ -2,6 +2,7 @@ package src.messages;
 
 import src.CLI.Peer;
 import src.chord.ChordInfo;
+import src.chord.ChordNode;
 
 public class PredecessorMessage extends Message {
 
@@ -15,9 +16,8 @@ public class PredecessorMessage extends Message {
     @Override
     public void handle() {
         try {
-            System.out.println(Peer.chordNode.getNodeHash());
-            if (predecessorInfo.getHashKey() > Peer.chordNode.getNodeHash()
-                    || predecessorInfo.getHashKey() < Peer.chordNode.getFinger(0).getHashKey()) {
+            if (ChordNode.isBetween(Peer.chordNode.getNodeHash(), Peer.chordNode.getFinger(0).getHashKey(),
+                    predecessorInfo.getHashKey(), false)) {
                 Peer.chordNode.setFinger(predecessorInfo, 0);
             }
             Peer.log("Sending Notify message");
@@ -29,7 +29,6 @@ public class PredecessorMessage extends Message {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
     }
 }

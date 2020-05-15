@@ -15,9 +15,9 @@ public class TestClient {
 
         ChordNode c = new ChordNode(null, "127.0.0.1", messageReceiver.getPort());
 
-        TestMessage test = new TestMessage("127.0.0.1", 37047, c.getNodeInfo());
-        MessageSender sender = new MessageSender(test);
-        sender.send();
+        // TestMessage test = new TestMessage("127.0.0.1", 37047, c.getNodeInfo());
+        // MessageSender sender = new MessageSender(test);
+        // sender.send();
 
     }
 }

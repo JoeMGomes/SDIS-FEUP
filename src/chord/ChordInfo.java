@@ -38,7 +38,7 @@ public class ChordInfo implements Serializable {
     
     public String toString() {
         return "{" +
-            ", ip='" + ip + "'" +
+            "ip='" + ip + "'" +
             ", port='" + port + "'" +
             "}";
     }

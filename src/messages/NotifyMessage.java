@@ -2,6 +2,7 @@ package src.messages;
 
 import src.CLI.Peer;
 import src.chord.ChordInfo;
+import src.chord.ChordNode;
 
 public class NotifyMessage extends Message {
 
@@ -14,13 +15,17 @@ public class NotifyMessage extends Message {
 
     @Override
     public void handle() {
-        Peer.log("Notified");
-        if (Peer.chordNode.getPredecessor() == null || 
-                predecessor.getHashKey() > Peer.chordNode.getPredecessor().getHashKey() ||
-                predecessor.getHashKey() < Peer.chordNode.getNodeHash()) {
-            Peer.chordNode.setPredecessor(predecessor);
-            Peer.log("New predecessor");
+        try {
+
+            Peer.log("Notified");
+            if (Peer.chordNode.getPredecessor() == null || ChordNode.isBetween(Peer.chordNode.getPredecessor().getHashKey(),
+                    Peer.chordNode.getNodeHash(), this.predecessor.getHashKey(), false)) {
+                Peer.chordNode.setPredecessor(predecessor);
+                Peer.log("New predecessor");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
-    
+
 }

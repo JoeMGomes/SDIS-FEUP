@@ -2,8 +2,10 @@ package src.messages;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLServerSocket;
@@ -41,7 +43,7 @@ public class MessageReceiver implements Runnable {
         SSLServerSocketFactory serverSocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 
         try {
-            serverSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(port);
+            serverSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(this.port);
             this.port = serverSocket.getLocalPort();
             serverSocket.setNeedClientAuth(true);
             serverSocket.setEnabledProtocols(serverSocket.getSupportedProtocols());
@@ -95,10 +97,20 @@ public class MessageReceiver implements Runnable {
 
             Message e = (Message) receivedMessage;
             Peer.log("Received from " + e.getSender().getIp() + ':' + e.getSender().getPort());
-
-            // TODO Por isto num thread
+            
+            // try {
+            // // TODO Por isto num thread
             executor.schedule(new Thread(() -> e.handle()), 0, TimeUnit.SECONDS);
 
+            //     handle1.get();
+            // } catch (InterruptedException e1) {
+
+            //     Exception a = (Exception) e1.getCause();
+            //     a.printStackTrace();
+            // } catch (ExecutionException e1) {
+            //     Exception a = (Exception) e1.getCause();
+            //     a.printStackTrace();
+            // }
         }
 
     }
