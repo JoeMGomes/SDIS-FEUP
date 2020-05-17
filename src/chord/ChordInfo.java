@@ -1,6 +1,7 @@
 package src.chord;
 
 import java.io.Serializable;
+import src.*;
 
 public class ChordInfo implements Serializable {
     
@@ -11,7 +12,7 @@ public class ChordInfo implements Serializable {
     public ChordInfo(String ip, int port){
         this.ip = ip;
         this.port = port;
-        this.hashKey = ChordNode.hashString(this.ip + this.port);
+        this.hashKey = Utils.hashString(this.ip + this.port);
     }
 
     public ChordInfo(int hashKey){

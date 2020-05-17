@@ -1,7 +1,8 @@
-package src.messages;
+package src.messages.chordMessages;
 
 import src.CLI.Peer;
 import src.chord.ChordInfo;
+import src.messages.*;
 
 public class FindPredecessor extends Message {
 

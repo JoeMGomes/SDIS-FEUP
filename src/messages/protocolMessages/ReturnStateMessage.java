@@ -1,7 +1,8 @@
-package src.messages;
+package src.messages.protocolMessages;
 
 import src.chord.ChordInfo;
 import src.chord.ChordNode;
+import src.messages.Message;
 
 public class ReturnStateMessage extends Message {
 

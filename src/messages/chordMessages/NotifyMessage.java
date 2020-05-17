@@ -1,8 +1,9 @@
-package src.messages;
+package src.messages.chordMessages;
 
+import src.messages.*;
 import src.CLI.Peer;
 import src.chord.ChordInfo;
-import src.chord.ChordNode;
+import src.*;
 
 public class NotifyMessage extends Message {
 
@@ -18,7 +19,7 @@ public class NotifyMessage extends Message {
         try {
 
             Peer.log("Notified");
-            if (Peer.chordNode.getPredecessor() == null || ChordNode.isBetween(Peer.chordNode.getPredecessor().getHashKey(),
+            if (Peer.chordNode.getPredecessor() == null || Utils.isBetween(Peer.chordNode.getPredecessor().getHashKey(),
                     Peer.chordNode.getNodeHash(), this.predecessor.getHashKey(), false)) {
                 Peer.chordNode.setPredecessor(predecessor);
                 Peer.log("New predecessor");

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.CompletionHandler;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
@@ -20,12 +19,15 @@ public class AsyncWrite {
      */
     public static void write(Path filePath, byte[] data, CompletionHandler<Integer, Object> handler) {
         try {
-            AsynchronousFileChannel fileChannel = AsynchronousFileChannel.open(filePath, StandardOpenOption.WRITE);
+            AsynchronousFileChannel fileChannel = AsynchronousFileChannel.open(filePath, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+            
             int dataSize = data.length;
             ByteBuffer buffer = ByteBuffer.allocate(dataSize);
             buffer.put(data);
+            System.out.println(new String(buffer.array()));
             long position = 0;
-
+            //Obligatory flip instruction because ByteBuffers are weird
+            buffer.flip();
             fileChannel.write(buffer, position, buffer, handler);
 
         } catch (IOException e) {

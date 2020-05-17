@@ -1,8 +1,8 @@
 package src.chord;
 
 import src.CLI.Peer;
-import src.messages.FindSuccessor;
 import src.messages.MessageSender;
+import src.messages.chordMessages.FindSuccessor;
 
 public class FixFingers implements Runnable{
 

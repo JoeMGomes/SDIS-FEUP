@@ -1,8 +1,10 @@
-package src.messages;
+package src.messages.chordMessages;
 
 import src.CLI.Peer;
 import src.chord.ChordInfo;
 import src.chord.ChordNode;
+import src.messages.*;
+import src.*;
 
 public class FindSuccessor extends Message {
 
@@ -20,7 +22,7 @@ public class FindSuccessor extends Message {
 
         try {
 
-            if (ChordNode.isBetween(Peer.chordNode.getNodeHash(), Peer.chordNode.getFinger(0).getHashKey(),
+            if (Utils.isBetween(Peer.chordNode.getNodeHash(), Peer.chordNode.getFinger(0).getHashKey(),
                     nodeToFindSuccessor.getHashKey(), true)) {
                 Message message;
     
@@ -30,11 +32,10 @@ public class FindSuccessor extends Message {
                     message = new FixFingerMessage(getSender().getIp(), getSender().getPort(), Peer.chordNode.getNodeInfo(),
                             Peer.chordNode.getFinger(0));
                 } else{
-                    Peer.log("Sending Sucerror Message");
+                    Peer.log("Sending Sucerror Message to " + getSender().getIp() + ':' + getSender().getPort());
                     //Sends Sucessor Message to original asker
                     message = new SuccessorMessage(getSender().getIp(), getSender().getPort(), Peer.chordNode.getNodeInfo(),Peer.chordNode.getFinger(0));
                 }
-                System.out.println("Sending message AAA" + getSender().getIp() + ':' + getSender().getPort());;
                 MessageSender sender = new MessageSender(message);
                 sender.send();
             } else {

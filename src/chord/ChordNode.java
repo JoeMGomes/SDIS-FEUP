@@ -1,16 +1,13 @@
 package src.chord;
 
 import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.Collections;
 
-import src.messages.FindSuccessor;
+import src.messages.chordMessages.FindSuccessor;
 import src.messages.MessageSender;
 import src.CLI.Peer;
+import src.*;
 
 public class ChordNode implements Serializable {
     public final static int mBits = 6;
@@ -39,40 +36,11 @@ public class ChordNode implements Serializable {
     public ChordInfo closestPrecedingNode(int hashKey) {
 
         for (int i = ChordNode.mBits - 1; i >= 0; i--) {
-            if(isBetween( getNodeHash(), hashKey, getFinger(i).getHashKey(), false))
+            if(Utils.isBetween( getNodeHash(), hashKey, getFinger(i).getHashKey(), false))
                 return getFinger(i);
         }
 
         return getNodeInfo();
-    }
-
-    public static boolean isBetween(int min, int max, int value, boolean semiclosed) {
-        if (min >= max) {
-            return semiclosed ? min < value || value <= max 
-                                : min < value || value < max;
-        }
-
-        return semiclosed ? min < value && value <= max 
-                            : min < value && value < max;
-    }
-
-    public static int hashString(String s) {
-        return Math.floorMod(encryptSha1(s), (int) Math.pow(2, mBits));
-    }
-
-    public static int encryptSha1(String s) {
-        MessageDigest digest = null;
-
-        try {
-            digest = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        byte[] hash = digest.digest(s.getBytes(StandardCharsets.UTF_8));
-        ByteBuffer wrapped = ByteBuffer.wrap(hash);
-
-        return wrapped.getInt();
     }
 
     // Getters and setters bellow this line
@@ -113,14 +81,14 @@ public class ChordNode implements Serializable {
 
 
     public static void main(String[] args) {
-        System.out.println(isBetween(10, 40, 30, false));//truye
-        System.out.println(isBetween(10, 40, 1, false));//F
-        System.out.println(isBetween(10, 40, 40, false));//False
-        System.out.println(isBetween(10, 40, 40, true));//Trye
-        System.out.println(isBetween(40, 10, 30, false));//false
-        System.out.println(isBetween(40, 10, 1, false)); // t
-        System.out.println(isBetween(40, 10, 10, false)); //f
-        System.out.println(isBetween(40, 10, 10, true)); //true
+        System.out.println(Utils.isBetween(10, 40, 30, false));//truye
+        System.out.println(Utils.isBetween(10, 40, 1, false));//F
+        System.out.println(Utils.isBetween(10, 40, 40, false));//False
+        System.out.println(Utils.isBetween(10, 40, 40, true));//Trye
+        System.out.println(Utils.isBetween(40, 10, 30, false));//false
+        System.out.println(Utils.isBetween(40, 10, 1, false)); // t
+        System.out.println(Utils.isBetween(40, 10, 10, false)); //f
+        System.out.println(Utils.isBetween(40, 10, 10, true)); //true
     }
 
 }

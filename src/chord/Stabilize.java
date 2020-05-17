@@ -1,7 +1,7 @@
 package src.chord;
 
 import src.CLI.Peer;
-import src.messages.FindPredecessor;
+import src.messages.chordMessages.FindPredecessor;
 import src.messages.MessageSender;
 
 public class Stabilize implements Runnable{

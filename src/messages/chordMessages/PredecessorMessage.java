@@ -1,8 +1,10 @@
-package src.messages;
+package src.messages.chordMessages;
 
 import src.CLI.Peer;
 import src.chord.ChordInfo;
 import src.chord.ChordNode;
+import src.messages.*;
+import src.*;
 
 public class PredecessorMessage extends Message {
 
@@ -16,7 +18,7 @@ public class PredecessorMessage extends Message {
     @Override
     public void handle() {
         try {
-            if (ChordNode.isBetween(Peer.chordNode.getNodeHash(), Peer.chordNode.getFinger(0).getHashKey(),
+            if (Utils.isBetween(Peer.chordNode.getNodeHash(), Peer.chordNode.getFinger(0).getHashKey(),
                     predecessorInfo.getHashKey(), false)) {
                 Peer.chordNode.setFinger(predecessorInfo, 0);
             }

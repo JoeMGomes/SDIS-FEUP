@@ -1,18 +1,18 @@
 package src.CLI;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.concurrent.ExecutionException;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import src.chord.ChordInfo;
 import src.chord.ChordNode;
 import src.chord.FixFingers;
 import src.chord.Stabilize;
 import src.messages.MessageReceiver;
+import src.files.FileManager;
 
 public class Peer {
 
@@ -22,6 +22,9 @@ public class Peer {
     public static FixFingers fixFingers;
     public static Stabilize stabilize;
     public static MessageReceiver receiver;
+    public static FileManager fileManager;
+    public static AtomicInteger maxSpace = new AtomicInteger(Integer.MAX_VALUE);
+    public static AtomicInteger usedSpace = new AtomicInteger(0);
 
     public static void main(String[] args) {
 
@@ -42,11 +45,13 @@ public class Peer {
         fixFingers = new FixFingers();
         stabilize = new Stabilize();
         receiver = new MessageReceiver(portAssigned);
-        portAssigned = receiver.getPort();
-        chordNode = new ChordNode(knownPeer, "127.0.0.1", portAssigned);
 
-        System.out.println(portAssigned);
-        System.out.println(chordNode.getNodeInfo().getIp());
+        chordNode = new ChordNode(knownPeer, "127.0.0.1", receiver.getPort());
+        fileManager = new FileManager(Integer.toString(chordNode.getNodeHash()));
+
+        System.out.println("Initiating Peer: ");
+        System.out.println(chordNode.getNodeInfo().toString());
+
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
         ScheduledFuture<?> handle1 = executor.schedule(receiver, 0, TimeUnit.SECONDS);
