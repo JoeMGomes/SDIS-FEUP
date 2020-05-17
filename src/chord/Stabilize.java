@@ -10,10 +10,16 @@ public class Stabilize implements Runnable{
     public void run(){
         Peer.log("Stabilizing...");
         ChordInfo self = Peer.chordNode.getNodeInfo();
-        ChordInfo successor = Peer.chordNode.getFinger(0);
+        int i = 0;
+        while (i < ChordNode.successorListSize) {
+            ChordInfo successor = Peer.chordNode.getSuccessor(i);
+            FindPredecessor message = new FindPredecessor(successor.getIp(), successor.getPort(), self, successor);
+            MessageSender sender = new MessageSender(message);
+            if (sender.send()) break;
+            i++;
+        }
+        
         //if (successor.getHashKey() == Peer.chordNode.getNodeHash()) return;
-        FindPredecessor message = new FindPredecessor(successor.getIp(), successor.getPort(), self, successor);
-        MessageSender sender = new MessageSender(message);
-        sender.send();
+        
     }
 }

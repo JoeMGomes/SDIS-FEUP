@@ -3,6 +3,8 @@ package src.messages.chordMessages;
 import src.CLI.Peer;
 import src.chord.ChordInfo;
 import src.messages.*;
+import java.util.*;
+
 
 public class FindPredecessor extends Message {
 
@@ -23,7 +25,7 @@ public class FindPredecessor extends Message {
                 return;
             }
             Peer.log("Peer " + Peer.chordNode.getNodeInfo().toString() + "is the predecessor."  );
-            PredecessorMessage message = new PredecessorMessage(getSender().getIp(), getSender().getPort(), Peer.chordNode.getNodeInfo(), predecessor);
+            PredecessorMessage message = new PredecessorMessage(getSender().getIp(), getSender().getPort(), Peer.chordNode.getNodeInfo(), predecessor, Peer.chordNode.getSuccessorList());
             MessageSender sender = new MessageSender(message);
             sender.send();
         } catch(Exception e) {

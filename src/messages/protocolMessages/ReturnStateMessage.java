@@ -37,7 +37,13 @@ public class ReturnStateMessage extends Message {
             if (info.getPredecessor() != null)
                 returnString += "\nPredecessor:" + info.getPredecessor().toString() + "\n";
             else
-                returnString += "\nPredeccessor: NULL";
+                returnString += "\nPredeccessor: NULL\n";
+
+            i = 0;
+            for (ChordInfo c : info.getSuccessorList()) {
+                returnString += "Successor " + i + ": " + c.toString() + "\n";
+                i++;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -21,7 +21,7 @@ public class MessageSender {
         System.setProperty("javax.net.ssl.trustStorePassword", "123456");
     }
 
-    public void send(){
+    public boolean send(){
 
         SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
         SSLSocket clientSocket;
@@ -34,8 +34,9 @@ public class MessageSender {
             clientSocket.close();
         } catch (Exception e) {
             System.out.println("Error in SSL Conection");
+            return false;
         }
-
-    }
+        return true;
+    }   
 
 }

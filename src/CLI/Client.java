@@ -109,6 +109,7 @@ public class Client {
 
                 //Get key from file info
                 fileKey = Utils.hashString(toHash);
+                System.out.println("Key == " + fileKey);
             }else{
                 throw new IOException();
             }

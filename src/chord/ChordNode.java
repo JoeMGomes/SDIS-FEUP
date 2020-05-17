@@ -11,14 +11,20 @@ import src.*;
 
 public class ChordNode implements Serializable {
     public final static int mBits = 6;
+    public final static int successorListSize = 3;
     private List<ChordInfo> fingerTable = Collections.synchronizedList(new ArrayList<ChordInfo>());
-    private ChordInfo predecessor;
+    private List<ChordInfo> successorList = Collections.synchronizedList(new ArrayList<ChordInfo>());
+    private volatile ChordInfo predecessor;
     public ChordInfo nodeInfo;
+    
 
     public ChordNode(ChordInfo node, String ip, int port) {
         this.nodeInfo = new ChordInfo(ip, port);
         for (int i = 0; i < mBits; i++) {
             fingerTable.add(nodeInfo);
+        }
+        for (int i = 0; i < successorListSize; i++) {
+            successorList.add(null);
         }
         if (node != null) {
             this.join(node);
@@ -77,6 +83,27 @@ public class ChordNode implements Serializable {
 
     public void setFinger(ChordInfo info, int i) {
         this.getFingerTable().set(i, info);
+    }
+
+    public List<ChordInfo> getSuccessorList() {
+        return this.successorList;
+    }
+
+    public void setSuccessorList(List<ChordInfo> successorList) {
+        this.successorList = successorList;
+    }
+
+    public ChordInfo getSuccessor(int i) {
+        if (i >= this.successorList.size()) {
+            return null;
+        }
+
+        ChordInfo suc = successorList.get(i);
+        if (suc != null) return suc;
+
+        if (i == 0) i++;
+
+        return getFinger(i);
     }
 
 
