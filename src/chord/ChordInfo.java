@@ -41,6 +41,7 @@ public class ChordInfo implements Serializable {
         return "{" +
             "ip='" + ip + "'" +
             ", port='" + port + "'" +
+            ", hash='" + hashKey + "'" +
             "}";
     }
 
