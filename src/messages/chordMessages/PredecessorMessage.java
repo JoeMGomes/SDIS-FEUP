@@ -22,21 +22,29 @@ public class PredecessorMessage extends Message {
     @Override
     public void handle() {
         try {
-            List<ChordInfo> tempList = new ArrayList<ChordInfo>();
+            List<ChordInfo> tempList = Collections.synchronizedList(new ArrayList<ChordInfo>());
             tempList.add(getSender());
             tempList.addAll(successorList.subList(0, successorList.size()-1));
             Peer.chordNode.setSuccessorList(tempList);
             if (Utils.isBetween(Peer.chordNode.getNodeHash(), getSender().getHashKey(),
                     predecessorInfo.getHashKey(), false)) {
-                Peer.chordNode.setFinger(predecessorInfo, 0);
-                List<ChordInfo> newSuccList = new ArrayList<ChordInfo>();
-                newSuccList.add(predecessorInfo);
-                List<ChordInfo> succList = Peer.chordNode.getSuccessorList();
-                newSuccList.addAll(succList.subList(0, succList.size()-1));
-                Peer.chordNode.setSuccessorList(newSuccList);
+                Message message = new HandShakeMessage(predecessorInfo.getIp(), predecessorInfo.getPort(), Peer.chordNode.getNodeInfo());
+                MessageSender sender = new MessageSender(message);
+                if (sender.send())  {
+                    Peer.chordNode.setFinger(predecessorInfo, 0);
+                    List<ChordInfo> newSuccList = Collections.synchronizedList(new ArrayList<ChordInfo>());
+                    newSuccList.add(predecessorInfo);
+                    List<ChordInfo> succList = Peer.chordNode.getSuccessorList();
+                    newSuccList.addAll(succList.subList(0, succList.size()-1));
+                    Peer.chordNode.setSuccessorList(newSuccList);
+                } else {
+                    Peer.chordNode.setFinger(Peer.chordNode.getSuccessor(0), 0);
+                }
             }
             Peer.log("Sending Notify message");
             ChordInfo successor = Peer.chordNode.getSuccessor(0);
+            if (Peer.chordNode.getNodeInfo().getPort() == 9000) 
+                System.out.println("Successor: " + successor.getPort());
             NotifyMessage message = new NotifyMessage(successor.getIp(), successor.getPort(),
                     Peer.chordNode.getNodeInfo());
             MessageSender sender = new MessageSender(message);

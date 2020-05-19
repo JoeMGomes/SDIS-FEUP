@@ -1,4 +1,4 @@
-package src.messages.protocolMessages;
+package src.messages.protocolMessages.state;
 
 import src.CLI.Peer;
 import src.chord.ChordInfo;

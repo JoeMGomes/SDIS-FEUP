@@ -17,12 +17,16 @@ public class NotifyMessage extends Message {
     @Override
     public void handle() {
         try {
-
-            Peer.log("Notified");
             if (Peer.chordNode.getPredecessor() == null || Utils.isBetween(Peer.chordNode.getPredecessor().getHashKey(),
                     Peer.chordNode.getNodeHash(), this.predecessor.getHashKey(), false)) {
                 Peer.chordNode.setPredecessor(predecessor);
-                Peer.log("New predecessor");
+            } else {
+                ChordInfo peerPred = Peer.chordNode.getPredecessor();
+                Message message = new HandShakeMessage(peerPred.getIp(), peerPred.getPort(), Peer.chordNode.getNodeInfo());
+                MessageSender sender = new MessageSender(message);
+                if (!sender.send()) {
+                    Peer.chordNode.setPredecessor(predecessor);
+                }
             }
         } catch(Exception e) {
             e.printStackTrace();

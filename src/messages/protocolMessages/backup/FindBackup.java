@@ -1,4 +1,4 @@
-package src.messages.protocolMessages;
+package src.messages.protocolMessages.backup;
 
 import src.messages.*;
 import src.chord.*;
@@ -26,14 +26,14 @@ public class FindBackup extends Message{
                 ChordInfo successor = Peer.chordNode.getFinger(0);
                 Peer.log("Sending FindBackup Message");
                 //Sends Sucessor Message to original asker
-                Message message = new Backup(successor.getIp(), successor.getPort(), Peer.chordNode.getNodeInfo(), this.key, this.content, this.repDegree);
+                Message message = new Backup(successor.getIp(), successor.getPort(), getSender(), this.key, this.content, this.repDegree);
                 MessageSender sender = new MessageSender(message);
                 sender.send();
             } else {
                 Peer.log("Sending FindBackup ");
                 //Forward FindSucessor Message to best Peer
                 ChordInfo n1 = Peer.chordNode.closestPrecedingNode(this.key);
-                FindBackup message = new FindBackup(n1.getIp(), n1.getPort(), Peer.chordNode.getNodeInfo(), this.key, this.content, this.repDegree);
+                FindBackup message = new FindBackup(n1.getIp(), n1.getPort(), getSender(), this.key, this.content, this.repDegree);
                 MessageSender sender = new MessageSender(message);
                 sender.send();
             }

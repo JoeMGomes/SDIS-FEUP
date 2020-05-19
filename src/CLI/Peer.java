@@ -1,6 +1,8 @@
 package src.CLI;
 
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -16,7 +18,7 @@ import src.files.FileManager;
 
 public class Peer {
 
-    public static final boolean debug = true;
+    public static final boolean debug = false;
 
     public static ChordNode chordNode;
     public static FixFingers fixFingers;
@@ -25,6 +27,7 @@ public class Peer {
     public static FileManager fileManager;
     public static AtomicInteger maxSpace = new AtomicInteger(Integer.MAX_VALUE);
     public static AtomicInteger usedSpace = new AtomicInteger(0);
+    public static List<Integer> forwarded = Collections.synchronizedList(new ArrayList<Integer>());
 
     public static void main(String[] args) {
 
@@ -71,6 +74,17 @@ public class Peer {
         //     new Thread(Peer.stabilize).start();
         // }
     }
+
+    public static void setMaxSpace(int newSpace) {
+
+        while (newSpace < usedSpace.get()) {
+            // TODO filemanager remove files
+
+        }
+        //Sets new max space
+        maxSpace.set(newSpace);
+    }
+
 
     public static void log(String string){
         if(debug){

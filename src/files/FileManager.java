@@ -1,5 +1,6 @@
 package src.files;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.CompletionHandler;
@@ -7,19 +8,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import src.CLI.Peer;
+
 public class FileManager {
 
     private final String defaultRoot = "peer";
     private final String defaultFiles = "files";
-    private final String defaultRestore = "restore";
     private String rootFolder;
+    private String filesFolder;
 
     public FileManager(String id) {
         rootFolder = defaultRoot + id;
 
         Path root = Paths.get(rootFolder);
         Path filesPath = Paths.get(rootFolder, defaultFiles);
-        //this.restorePath = Paths.get(restoreFolder);
+        filesFolder = filesPath.toString();
         try {
             if(!Files.exists(root) || !Files.isDirectory(root)) {
                 Files.deleteIfExists(root);
@@ -36,12 +39,6 @@ public class FileManager {
             //     Files.createDirectory(this.restorePath);
             // }
 
-            // Path peer = Paths.get(peerFolder, peerFolder);
-            // if(Files.exists(peer)) {
-            //     readFromFile(peer);
-            //     Files.deleteIfExists(peer);
-            // }
-            // Files.createFile(peer);
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -61,7 +58,7 @@ public class FileManager {
         
             @Override
             public void completed(Integer arg0, Object arg1) {
-                System.out.println("Completed: " + new String(((ByteBuffer) arg1).array()));                
+                System.out.println("Completed");                
             }
         });
     }
@@ -80,6 +77,30 @@ public class FileManager {
             Files.deleteIfExists(path);
         } catch (IOException e) {
             System.out.println(e.toString());
+        }
+    }
+
+    public void deleteUntilMaxSpace(int space) {
+        File folder = new File(filesFolder);
+        File[] files = folder.listFiles();
+
+        for (File file : files) {
+            if (space != 0 && space >= Peer.usedSpace.get()) {
+                break;
+            }
+
+            Peer.usedSpace.getAndAdd((int) -file.length());
+ 
+            String deleted = file.getName();
+            Path path = Paths.get(filesFolder, deleted);
+
+            // TODO read and send to successor
+
+            try {
+                Files.delete(path);
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
         }
     }
     

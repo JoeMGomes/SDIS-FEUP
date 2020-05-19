@@ -13,9 +13,9 @@ import java.util.concurrent.TimeUnit;
 import src.Utils;
 import src.chord.ChordInfo;
 import src.messages.protocolMessages.*;
-import src.messages.Message;
-import src.messages.MessageReceiver;
-import src.messages.MessageSender;
+import src.messages.protocolMessages.backup.*;
+import src.messages.protocolMessages.state.*;
+import src.messages.*;
 
 public class Client {
 
@@ -83,11 +83,6 @@ public class Client {
      */
 
     public void backup(String filePath, int repDegree) {
-
-        if(repDegree > 1){
-            System.out.println("NOT IMPLEMENTED");
-            return;
-        }
 
         if (repDegree < 1 || repDegree > 9) {
             System.out.println("Replication degree must be in the interval [1,9]");

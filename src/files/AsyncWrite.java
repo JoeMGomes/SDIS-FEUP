@@ -24,7 +24,6 @@ public class AsyncWrite {
             int dataSize = data.length;
             ByteBuffer buffer = ByteBuffer.allocate(dataSize);
             buffer.put(data);
-            System.out.println(new String(buffer.array()));
             long position = 0;
             //Obligatory flip instruction because ByteBuffers are weird
             buffer.flip();

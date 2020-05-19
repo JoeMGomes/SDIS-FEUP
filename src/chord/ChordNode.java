@@ -98,7 +98,7 @@ public class ChordNode implements Serializable {
             return;
         }
 
-        successorList.remove(i);
+        this.successorList.remove(i);
     }
 
     public ChordInfo getSuccessor(int i) {
