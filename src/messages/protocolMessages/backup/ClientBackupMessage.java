@@ -26,7 +26,7 @@ public class ClientBackupMessage extends Message {
         //Se for o peer responsavel pela key
         if(Peer.chordNode.getPredecessor() != null && Utils.isBetween(Peer.chordNode.getPredecessor().getHashKey(), Peer.chordNode.getNodeHash(),key,false)){
             //Handle it 
-            Backup backup = new Backup(null, 0, getSender(), this.key, this.content, this.repDegree);
+            Backup backup = new Backup(null, 0, null ,getSender() , this.key, this.content, this.repDegree);
             backup.handle();
 
         } else{

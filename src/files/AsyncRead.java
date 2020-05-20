@@ -18,7 +18,7 @@ public class AsyncRead {
      * @param filePath - Path of the file to be read from
      * @param handler - CompletionHandler that is composed of a completed and a failed functions to be run when the read is done
      */
-    public static void read(Path filePath, CompletionHandler<Integer, Object> handler) {
+    public static void read(Path filePath, CompletionHandler<Integer, ByteBuffer> handler) {
         try {
             AsynchronousFileChannel fileChannel = AsynchronousFileChannel.open(filePath, StandardOpenOption.READ);
             int fileSize = (int) Files.size(filePath);

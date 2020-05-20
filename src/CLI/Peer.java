@@ -61,25 +61,12 @@ public class Peer {
         ScheduledFuture<?> handle2 = executor.scheduleAtFixedRate(Peer.fixFingers, 0, 500, TimeUnit.MILLISECONDS);
         ScheduledFuture<?> handle3 = executor.scheduleAtFixedRate(Peer.stabilize, 0, 500, TimeUnit.MILLISECONDS);
 
-        // new Thread(receiver).start();
-
-        // while (true) {
-        //     try {
-		// 		Thread.sleep(500);
-		// 	} catch (InterruptedException e) {
-		// 		// TODO Auto-generated catch block
-		// 		e.printStackTrace();
-		// 	}
-        //     new Thread(Peer.fixFingers).start();
-        //     new Thread(Peer.stabilize).start();
-        // }
     }
 
     public static void setMaxSpace(int newSpace) {
 
-        while (newSpace < usedSpace.get()) {
-            // TODO filemanager remove files
-
+        if (newSpace < usedSpace.get()) {
+            fileManager.deleteUntilMaxSpace(newSpace);
         }
         //Sets new max space
         maxSpace.set(newSpace);

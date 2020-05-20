@@ -12,9 +12,10 @@ import java.util.concurrent.TimeUnit;
 
 import src.Utils;
 import src.chord.ChordInfo;
-import src.messages.protocolMessages.*;
 import src.messages.protocolMessages.backup.*;
 import src.messages.protocolMessages.state.*;
+import src.messages.protocolMessages.reclaim.*;
+import src.messages.protocolMessages.restore.*;
 import src.messages.*;
 
 public class Client {
@@ -23,6 +24,7 @@ public class Client {
     public ChordInfo target;
     public ChordInfo info;
     ScheduledExecutorService executor;
+    public static int origRepDegree;
 
     Client() {
         receiver = new MessageReceiver(0);
@@ -35,8 +37,8 @@ public class Client {
     public static void main(String[] args) {
 
         Client client = new Client();
-
-        System.out.println(client.info.toString());
+        System.out.println("-------- Client Info --------");
+        System.out.println(client.info.toString() + "\n");
 
         int targetPort = 0;
         String targetIP = "";
@@ -58,8 +60,10 @@ public class Client {
                 case "DELETE":
                     break;
                 case "RESTORE":
+                    client.restore(args[3]);
                     break;
                 case "RECLAIM":
+                    client.reclaim(Integer.parseInt(args[3]));
                     break;
                 case "STATE":
                     client.state();
@@ -89,6 +93,8 @@ public class Client {
             return;
         }
 
+        origRepDegree = repDegree;
+
         byte[] fileContents = null;
         String toHash = new String();
         int fileKey = -1;
@@ -96,16 +102,16 @@ public class Client {
             File file = new File(filePath);
             toHash = file.toPath().getFileName().toString();
             if (file.exists() && file.canRead()) {
-                //reads file to byte[]
+                // reads file to byte[]
                 fileContents = Files.readAllBytes(file.toPath());
-                //gets file metadata to create hash
+                // gets file metadata to create hash
                 BasicFileAttributes metaData = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
                 toHash += metaData.creationTime().toString() + metaData.lastModifiedTime().toString() + metaData.size();
 
-                //Get key from file info
+                // Get key from file info
                 fileKey = Utils.hashString(toHash);
                 System.out.println("Key == " + fileKey);
-            }else{
+            } else {
                 throw new IOException();
             }
         } catch (IOException e) {
@@ -113,16 +119,65 @@ public class Client {
             return;
         }
 
-        //Request backup
-        Message message = new ClientBackupMessage(this.target.getIp(), this.target.getPort(), this.info, fileContents, repDegree, fileKey);
+        // Request backup
+        Message message = new ClientBackupMessage(this.target.getIp(), this.target.getPort(), this.info, fileContents,
+                repDegree, fileKey);
         MessageSender sender = new MessageSender(message);
-        sender.send();
+        if(!sender.send()){
+            System.out.println("Could not contact requested peer. Exiting...");
+            System.exit(-1);
+        }
+        
     }
 
-    public void state(){
+    public void reclaim(int space) {
+
+        // Request reclaim
+        Message message = new ClientReclaimMessage(this.target.getIp(), this.target.getPort(), this.info, space);
+        MessageSender sender = new MessageSender(message);
+        if(!sender.send()){
+            System.out.println("Could not contact requested peer. Exiting...");
+            System.exit(-1);
+        }
+    }
+
+    public void state() {
         GetStateMessage message = new GetStateMessage(this.target.getIp(), this.target.getPort(), this.info);
         MessageSender sender = new MessageSender(message);
-        sender.send();
+        if(!sender.send()){
+            System.out.println("Could not contact requested peer. Exiting...");
+            System.exit(-1);
+        }
     }
 
+    public void restore(String filePath) {
+
+        String toHash = new String();
+        int fileKey = -1;
+        try {
+            File file = new File(filePath);
+            toHash = file.toPath().getFileName().toString();
+            if (file.exists() && file.canRead()) {
+                // gets file metadata to create hash
+                BasicFileAttributes metaData = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                toHash += metaData.creationTime().toString() + metaData.lastModifiedTime().toString() + metaData.size();
+
+                // Get key from file info
+                fileKey = Utils.hashString(toHash);
+                System.out.println("Key == " + fileKey);
+            } else {
+                throw new IOException();
+            }
+        } catch (IOException e) {
+            System.out.println("Could not open file to read. Exiting...");
+            return;
+        }
+
+        ClientRestoreMessage message = new ClientRestoreMessage(this.target.getIp(), this.target.getPort(), this.info, fileKey);
+        MessageSender sender = new MessageSender(message);
+        if(!sender.send()){
+            System.out.println("Could not contact requested peer. Exiting...");
+            System.exit(-1);
+        }
+    }
 }
