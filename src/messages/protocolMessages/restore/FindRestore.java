@@ -18,8 +18,8 @@ public class FindRestore extends Message {
     public void handle() {
 
             //Se for o peer responsavel pela key
-            if (Utils.isBetween(Peer.chordNode.getNodeHash(), Peer.chordNode.getFinger(0).getHashKey(), this.key, true)) {  
-                ChordInfo successor = Peer.chordNode.getFinger(0);
+            if (Utils.isBetween(Peer.chordNode.getNodeHash(), Peer.chordNode.getSuccessor(0).getHashKey(), this.key, true)) {  
+                ChordInfo successor = Peer.chordNode.getSuccessor(0);
                 RequestRestore message = new RequestRestore(successor.getIp(), successor.getPort(), Peer.chordNode.getNodeInfo(), getSender(), this.key);
                 MessageSender sender = new MessageSender(message);
                 sender.send();   

@@ -29,7 +29,7 @@ public class ReclaimBackupMessage extends Message {
             return;
         }
         
-        ChordInfo successor = Peer.chordNode.getFinger(0);
+        ChordInfo successor = Peer.chordNode.getSuccessor(0);
         Message message = new ReclaimBackupMessage(successor.getIp(), successor.getPort(), getSender(), this.key, this.content);
         MessageSender sender = new MessageSender(message);
         sender.send();

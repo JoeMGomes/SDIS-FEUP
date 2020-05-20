@@ -19,8 +19,8 @@ public class FindBackup extends Message {
 
     @Override
     public void handle() {
-        if (Utils.isBetween(Peer.chordNode.getNodeHash(), Peer.chordNode.getFinger(0).getHashKey(), this.key, true)) {
-            ChordInfo successor = Peer.chordNode.getFinger(0);
+        if (Utils.isBetween(Peer.chordNode.getNodeHash(), Peer.chordNode.getSuccessor(0).getHashKey(), this.key, true)) {
+            ChordInfo successor = Peer.chordNode.getSuccessor(0);
             Peer.log("Sending FindBackup Message");
             // Sends Sucessor Message to original asker
             Message message = new Backup(successor.getIp(), successor.getPort(), Peer.chordNode.getNodeInfo(),

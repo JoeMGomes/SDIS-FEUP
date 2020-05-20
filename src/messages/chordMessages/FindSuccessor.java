@@ -22,7 +22,7 @@ public class FindSuccessor extends Message {
 
         try {
 
-            if (Utils.isBetween(Peer.chordNode.getNodeHash(), Peer.chordNode.getFinger(0).getHashKey(),
+            if (Utils.isBetween(Peer.chordNode.getNodeHash(), Peer.chordNode.getSuccessor(0).getHashKey(),
                     nodeToFindSuccessor.getHashKey(), true)) {
                 Message message;
     
@@ -30,11 +30,11 @@ public class FindSuccessor extends Message {
                     Peer.log("Sending FixFingerMessage to " + getSender().getIp() + ':' + getSender().getPort());
                     //Sends Sucessor Message to original asker
                     message = new FixFingerMessage(getSender().getIp(), getSender().getPort(), Peer.chordNode.getNodeInfo(),
-                            Peer.chordNode.getFinger(0));
+                            Peer.chordNode.Successor(0));
                 } else{
                     Peer.log("Sending Sucerror Message to " + getSender().getIp() + ':' + getSender().getPort());
                     //Sends Sucessor Message to original asker
-                    message = new SuccessorMessage(getSender().getIp(), getSender().getPort(), Peer.chordNode.getNodeInfo(),Peer.chordNode.getFinger(0));
+                    message = new SuccessorMessage(getSender().getIp(), getSender().getPort(), Peer.chordNode.getNodeInfo(),Peer.chordNode.getSuccessor(0));
                 }
                 MessageSender sender = new MessageSender(message);
                 sender.send();

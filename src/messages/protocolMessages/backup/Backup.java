@@ -40,7 +40,7 @@ public class Backup extends Message {
                 return;
             }
 
-            ChordInfo successor = Peer.chordNode.getFinger(0);
+            ChordInfo successor = Peer.chordNode.getSuccessor(0);
             Message message = new Backup(successor.getIp(), successor.getPort(), getSender(), this.client, this.key, this.content, this.repDegree);
             MessageSender sender = new MessageSender(message);
             sender.send();
