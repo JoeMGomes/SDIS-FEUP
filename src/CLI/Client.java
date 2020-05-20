@@ -16,6 +16,7 @@ import src.messages.protocolMessages.backup.*;
 import src.messages.protocolMessages.state.*;
 import src.messages.protocolMessages.reclaim.*;
 import src.messages.protocolMessages.restore.*;
+import src.messages.protocolMessages.delete.*;
 import src.messages.*;
 
 public class Client {
@@ -58,6 +59,7 @@ public class Client {
                     client.backup(args[3], Integer.parseInt(args[4]));
                     break;
                 case "DELETE":
+                    client.delete(args[3]);
                     break;
                 case "RESTORE":
                     client.restore(args[3]);
@@ -123,11 +125,11 @@ public class Client {
         Message message = new ClientBackupMessage(this.target.getIp(), this.target.getPort(), this.info, fileContents,
                 repDegree, fileKey);
         MessageSender sender = new MessageSender(message);
-        if(!sender.send()){
+        if (!sender.send()) {
             System.out.println("Could not contact requested peer. Exiting...");
             System.exit(-1);
         }
-        
+
     }
 
     public void reclaim(int space) {
@@ -135,7 +137,7 @@ public class Client {
         // Request reclaim
         Message message = new ClientReclaimMessage(this.target.getIp(), this.target.getPort(), this.info, space);
         MessageSender sender = new MessageSender(message);
-        if(!sender.send()){
+        if (!sender.send()) {
             System.out.println("Could not contact requested peer. Exiting...");
             System.exit(-1);
         }
@@ -144,7 +146,7 @@ public class Client {
     public void state() {
         GetStateMessage message = new GetStateMessage(this.target.getIp(), this.target.getPort(), this.info);
         MessageSender sender = new MessageSender(message);
-        if(!sender.send()){
+        if (!sender.send()) {
             System.out.println("Could not contact requested peer. Exiting...");
             System.exit(-1);
         }
@@ -152,6 +154,29 @@ public class Client {
 
     public void restore(String filePath) {
 
+        int fileKey = getFileHash(filePath);
+
+        ClientRestoreMessage message = new ClientRestoreMessage(this.target.getIp(), this.target.getPort(), this.info, fileKey);
+        MessageSender sender = new MessageSender(message);
+        if(!sender.send()){
+            System.out.println("Could not contact requested peer. Exiting...");
+            System.exit(-1);
+        }
+    }
+
+    public void delete(String filePath) {
+
+        int fileKey = getFileHash(filePath);
+    
+        ClientDeleteMessage message = new ClientDeleteMessage(this.target.getIp(), this.target.getPort(), this.info, fileKey);
+        MessageSender sender = new MessageSender(message);
+        if(!sender.send()){
+            System.out.println("Could not contact requested peer. Exiting...");
+            System.exit(-1);
+        }
+    }
+
+    public int getFileHash(String filePath){
         String toHash = new String();
         int fileKey = -1;
         try {
@@ -170,14 +195,8 @@ public class Client {
             }
         } catch (IOException e) {
             System.out.println("Could not open file to read. Exiting...");
-            return;
+            System.exit(1);
         }
-
-        ClientRestoreMessage message = new ClientRestoreMessage(this.target.getIp(), this.target.getPort(), this.info, fileKey);
-        MessageSender sender = new MessageSender(message);
-        if(!sender.send()){
-            System.out.println("Could not contact requested peer. Exiting...");
-            System.exit(-1);
-        }
+        return fileKey;
     }
 }

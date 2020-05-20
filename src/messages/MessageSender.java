@@ -27,6 +27,7 @@ public class MessageSender {
         SSLSocket clientSocket;
         try {
             clientSocket = (SSLSocket) socketFactory.createSocket(InetAddress.getByName(message.getIpAddress()), message.getPort());
+            clientSocket.setSoTimeout(1000);
             clientSocket.startHandshake();
 
             ObjectOutputStream outToServer = new ObjectOutputStream(clientSocket.getOutputStream());

@@ -134,8 +134,10 @@ public class FileManager {
 
     public void delete(String name) {
         Path path = Paths.get(rootFolder, defaultFiles, name);
-
         try {
+            System.out.println("File to delete length2 = " + Files.size(path));
+            Peer.usedSpace.getAndAdd((int) -Files.size(path));
+
             Files.deleteIfExists(path);
         } catch (IOException e) {
             System.out.println(e.toString());
@@ -154,6 +156,7 @@ public class FileManager {
                 break;
             }
 
+            System.out.println("File to delete length = " + file.length());
             Peer.usedSpace.getAndAdd((int) -file.length());
 
             String deleted = file.getName();
@@ -169,7 +172,12 @@ public class FileManager {
     
     public static void writeClient(String name, byte[] data) {
         Path path = Paths.get("client", name);
-        Files.createDirectory("client");
+        try {
+            Path client = Paths.get("client");
+            Files.createDirectory(client);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // idk what to do with completion handler
         AsyncWrite.write(path, data, new CompletionHandler<Integer,Object>(){

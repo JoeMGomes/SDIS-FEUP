@@ -43,8 +43,6 @@ public class PredecessorMessage extends Message {
             }
             Peer.log("Sending Notify message");
             ChordInfo successor = Peer.chordNode.getSuccessor(0);
-            if (Peer.chordNode.getNodeInfo().getPort() == 9000) 
-                System.out.println("Successor: " + successor.getPort());
             NotifyMessage message = new NotifyMessage(successor.getIp(), successor.getPort(),
                     Peer.chordNode.getNodeInfo());
             MessageSender sender = new MessageSender(message);

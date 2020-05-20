@@ -42,7 +42,7 @@ public class Peer {
             knownPeerPort = Integer.parseInt(args[2]);
             knownPeer = new ChordInfo(knownPeerIP, knownPeerPort);
         } catch (Exception e) {
-            System.out.println("Bad Args, continuing");
+            System.out.println("Initiating First Peer");
         }
 
         fixFingers = new FixFingers();
