@@ -30,7 +30,7 @@ public class FindSuccessor extends Message {
                     Peer.log("Sending FixFingerMessage to " + getSender().getIp() + ':' + getSender().getPort());
                     //Sends Sucessor Message to original asker
                     message = new FixFingerMessage(getSender().getIp(), getSender().getPort(), Peer.chordNode.getNodeInfo(),
-                            Peer.chordNode.Successor(0));
+                            Peer.chordNode.getSuccessor(0));
                 } else{
                     Peer.log("Sending Sucerror Message to " + getSender().getIp() + ':' + getSender().getPort());
                     //Sends Sucessor Message to original asker

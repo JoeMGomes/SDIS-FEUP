@@ -20,11 +20,13 @@ public class DeleteMessage extends Message{
     @Override
     public void handle() {
 
-        if(Peer.fileManager.fileExists(Integer.toString(this.key)) || Peer.forwarded.contains(this.key)){
-
+        if(Peer.fileManager.fileExists(Integer.toString(this.key)){
             Peer.fileManager.delete(Integer.toString(this.key));
-            if(Peer.forwarded.contains(this.key))
-                Peer.forwarded.remove(Integer.valueOf(this.key));
+        }
+        
+        if(Peer.forwarded.contains(this.key)){
+
+            Peer.forwarded.remove(Integer.valueOf(this.key));
 
             DeleteMessage message = new DeleteMessage(Peer.chordNode.getSuccessor(0).getIp(),
                 Peer.chordNode.getSuccessor(0).getPort(), getSender(), this.client, this.key);
