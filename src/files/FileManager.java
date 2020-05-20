@@ -174,7 +174,8 @@ public class FileManager {
         Path path = Paths.get("client", name);
         try {
             Path client = Paths.get("client");
-            Files.createDirectory(client);
+            if (!Files.exists(client))
+                Files.createDirectory(client);
         } catch (IOException e) {
             e.printStackTrace();
         }
