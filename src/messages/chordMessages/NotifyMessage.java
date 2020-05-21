@@ -3,6 +3,10 @@ package src.messages.chordMessages;
 import src.messages.*;
 import src.CLI.Peer;
 import src.chord.ChordInfo;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import src.*;
 
 public class NotifyMessage extends Message {
@@ -20,6 +24,26 @@ public class NotifyMessage extends Message {
             if (Peer.chordNode.getPredecessor() == null || Utils.isBetween(Peer.chordNode.getPredecessor().getHashKey(),
                     Peer.chordNode.getNodeHash(), this.predecessor.getHashKey(), false)) {
                 Peer.chordNode.setPredecessor(predecessor);
+                System.out.println("NOtiFYIN");
+                            
+                List<Integer> toForward = Peer.fileManager.getFileKeys(Peer.chordNode.getPredecessor().getHashKey());
+
+                for (Integer c : Peer.forwarded) {
+                    if(c <= Peer.chordNode.getPredecessor().getHashKey() || c > Peer.chordNode.getNodeHash()){
+                        toForward.add(c);
+                    }
+                }
+                System.out.println("List Beg");
+                for(Integer a : toForward){
+                    System.out.println(a);
+                }
+                System.out.println("List End");
+
+                NewPredecessorMessage message = new NewPredecessorMessage(predecessor.getIp(), predecessor.getPort(), 
+                    Peer.chordNode.getNodeInfo(), toForward);
+
+                MessageSender sender = new MessageSender(message);
+                sender.send();                
             } else {
                 ChordInfo peerPred = Peer.chordNode.getPredecessor();
                 Message message = new HandShakeMessage(peerPred.getIp(), peerPred.getPort(), Peer.chordNode.getNodeInfo());

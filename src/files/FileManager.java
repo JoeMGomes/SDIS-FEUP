@@ -7,6 +7,8 @@ import java.nio.channels.CompletionHandler;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import src.CLI.Peer;
 import src.chord.*;
@@ -161,7 +163,9 @@ public class FileManager {
 
             String deleted = file.getName();
             this.readAndBackup(deleted);
-            Peer.forwarded.add(Integer.parseInt(deleted));
+
+            if (!Peer.forwarded.contains(Integer.parseInt(deleted)))
+                Peer.forwarded.add(Integer.parseInt(deleted));
         }
     }
 
@@ -195,5 +199,18 @@ public class FileManager {
                 System.exit(0);           
             }
         });
+    }
+
+    public List<Integer> getFileKeys(int key) {
+        File folder = new File(filesFolder);
+        File[] files = folder.listFiles();
+        List<Integer> stored = new ArrayList<>();
+
+        for (File file : files) {
+            if (key >= Integer.parseInt(file.getName()) || Integer.parseInt(file.getName()) > Peer.chordNode.getNodeHash())  {
+                stored.add(Integer.parseInt(file.getName()));
+            }
+        }
+        return stored;
     }
 }
