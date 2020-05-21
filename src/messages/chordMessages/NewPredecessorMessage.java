@@ -21,11 +21,7 @@ public class NewPredecessorMessage extends Message {
 
     @Override
     public void handle() {
-        System.out.println("Received New Predecessor Message");
         Set<Integer> set = new LinkedHashSet<Integer>(Peer.forwarded);
-        for(Integer a : set){
-            System.out.println(a);
-        }
         set.addAll(this.forwardList);
         Peer.forwarded = Collections.synchronizedList(new ArrayList<Integer>());
         Peer.forwarded.addAll(set);

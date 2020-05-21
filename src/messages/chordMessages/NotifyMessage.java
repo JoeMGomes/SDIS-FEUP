@@ -24,7 +24,6 @@ public class NotifyMessage extends Message {
             if (Peer.chordNode.getPredecessor() == null || Utils.isBetween(Peer.chordNode.getPredecessor().getHashKey(),
                     Peer.chordNode.getNodeHash(), this.predecessor.getHashKey(), false)) {
                 Peer.chordNode.setPredecessor(predecessor);
-                System.out.println("NOtiFYIN");
                             
                 List<Integer> toForward = Peer.fileManager.getFileKeys(Peer.chordNode.getPredecessor().getHashKey());
 
@@ -33,11 +32,6 @@ public class NotifyMessage extends Message {
                         toForward.add(c);
                     }
                 }
-                System.out.println("List Beg");
-                for(Integer a : toForward){
-                    System.out.println(a);
-                }
-                System.out.println("List End");
 
                 NewPredecessorMessage message = new NewPredecessorMessage(predecessor.getIp(), predecessor.getPort(), 
                     Peer.chordNode.getNodeInfo(), toForward);
