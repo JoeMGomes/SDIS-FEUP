@@ -1,8 +1,6 @@
 package src.CLI;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -30,7 +28,7 @@ public class Client {
     Client() {
         receiver = new MessageReceiver(0);
         int portAssigned = receiver.getPort();
-        info = new ChordInfo("127.0.0.1", portAssigned);
+        info = new ChordInfo(Utils.getOwnIP(), portAssigned);
         executor = Executors.newScheduledThreadPool(10);
         executor.schedule(receiver, 0, TimeUnit.SECONDS);
     }
@@ -38,7 +36,7 @@ public class Client {
     public static void main(String[] args) {
 
         Client client = new Client();
-        System.out.println("-------- Client Info --------");
+        System.out.println("\n-------- Client Info --------");
         System.out.println(client.info.toString() + "\n");
 
         int targetPort = 0;
@@ -112,7 +110,7 @@ public class Client {
 
                 // Get key from file info
                 fileKey = Utils.hashString(toHash);
-                System.out.println("Key == " + fileKey);
+                System.out.println("FileKey: " + fileKey);
             } else {
                 throw new IOException();
             }

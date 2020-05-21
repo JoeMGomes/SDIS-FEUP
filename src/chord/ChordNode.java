@@ -10,7 +10,7 @@ import src.CLI.Peer;
 import src.*;
 
 public class ChordNode implements Serializable {
-    public final static int mBits = 6;
+    public final static int mBits = 8;
     public final static int successorListSize = 3;
     private List<ChordInfo> fingerTable = Collections.synchronizedList(new ArrayList<ChordInfo>());
     private List<ChordInfo> successorList = Collections.synchronizedList(new ArrayList<ChordInfo>());

@@ -19,25 +19,16 @@ import src.messages.protocolMessages.restore.*;
 public class FileManager {
 
     private final String defaultRoot = "peer";
-    private final String defaultFiles = "files";
     private String rootFolder;
-    private String filesFolder;
 
     public FileManager(String id) {
         rootFolder = defaultRoot + id;
 
         Path root = Paths.get(rootFolder);
-        Path filesPath = Paths.get(rootFolder, defaultFiles);
-        filesFolder = filesPath.toString();
         try {
             if(!Files.exists(root) || !Files.isDirectory(root)) {
                 Files.deleteIfExists(root);
                 Files.createDirectory(root);
-            }
-
-            if (!Files.exists(filesPath) || !Files.isDirectory(filesPath)) {
-                Files.deleteIfExists(filesPath);
-                Files.createDirectory(filesPath);
             }
 
             // if (!Files.exists(this.restorePath) || !Files.isDirectory(this.restorePath)) {
@@ -52,7 +43,7 @@ public class FileManager {
     }
 
     public void write(String name, byte[] data) {
-        Path path = Paths.get(rootFolder, defaultFiles, name);
+        Path path = Paths.get(rootFolder, name);
 
         // idk what to do with completion handler
         AsyncWrite.write(path, data, new CompletionHandler<Integer,Object>(){
@@ -70,14 +61,14 @@ public class FileManager {
     }
 
     public void read(String name) {
-        Path path = Paths.get(rootFolder, defaultFiles, name);
+        Path path = Paths.get(rootFolder, name);
 
         // idk what to do with completion handler
         AsyncRead.read(path, null);
     }
 
     public void readAndBackup(String name ) {
-        Path path = Paths.get(rootFolder, defaultFiles, name);
+        Path path = Paths.get(rootFolder, name);
 
         AsyncRead.read(path, new CompletionHandler<Integer,ByteBuffer>(){
         
@@ -110,7 +101,7 @@ public class FileManager {
     }
 
     public void readAndRestore(String name, ChordInfo client) {
-        Path path = Paths.get(rootFolder, defaultFiles, name);
+        Path path = Paths.get(rootFolder, name);
 
         AsyncRead.read(path, new CompletionHandler<Integer,ByteBuffer>(){
         
@@ -135,7 +126,7 @@ public class FileManager {
     }
 
     public void delete(String name) {
-        Path path = Paths.get(rootFolder, defaultFiles, name);
+        Path path = Paths.get(rootFolder, name);
         try {
             Peer.usedSpace.getAndAdd((int) -Files.size(path));
 
@@ -146,7 +137,7 @@ public class FileManager {
     }
 
     public void deleteUntilMaxSpace(int space) {
-        File folder = new File(filesFolder);
+        File folder = new File(rootFolder);
         File[] files = folder.listFiles();
 
         for (File file : files) {
@@ -168,7 +159,7 @@ public class FileManager {
     }
 
     public boolean fileExists(String name) {
-        Path file = Paths.get(filesFolder, name);
+        Path file = Paths.get(rootFolder, name);
         return Files.exists(file);
     }
     
@@ -199,7 +190,7 @@ public class FileManager {
     }
 
     public List<Integer> getFileKeys(int key) {
-        File folder = new File(filesFolder);
+        File folder = new File(rootFolder);
         File[] files = folder.listFiles();
         List<Integer> stored = new ArrayList<>();
 

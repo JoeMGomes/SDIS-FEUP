@@ -29,12 +29,10 @@ public class ReturnStateMessage extends Message {
     public String toString() {
         String returnString = new String();
         try {
-            returnString += "-------- Peer " + info.getNodeHash() + " State --------\n";
+            returnString += "\n-------- Peer " + info.getNodeHash() + " State --------\n";
             returnString += info.getNodeInfo().toString();
-            returnString += "\n\n";
 
-            
-            returnString += "--- Chord Information ---\n";
+            returnString += "\n\n--- Chord Information ---\n";
             int i = 0;
             for (ChordInfo c : info.getFingerTable()) {
 
@@ -44,20 +42,21 @@ public class ReturnStateMessage extends Message {
             }
 
             if (info.getPredecessor() != null)
-                returnString += "\nPredecessor:" + info.getPredecessor().toString() + "\n";
+                returnString += "\nPredecessor:" + info.getPredecessor().toString() + "\n\n";
             else
                 returnString += "\nPredeccessor: NULL\n";
 
             i = 0;
             for (ChordInfo c : info.getSuccessorList()) {
+                if(c != null)
                 returnString += "Successor " + i + ": " + c.toString() + "\n";
+
                 i++;
             }
 
-            returnString += "--- Aplication Information ---\n";
+            returnString += "\n--- Aplication Information ---\n";
             returnString += "Max Space: " + maxSpace + "\n";
-            returnString += "Used Space: " + usedSpace + "\n";
-            returnString += "\n";
+            returnString += "Used Space: " + usedSpace + "\n\n";
             returnString += "Forwarded Files:\n";
             for (Integer k : this.forwardingTable) {
                 returnString += "\tFile: " + k + "\n";

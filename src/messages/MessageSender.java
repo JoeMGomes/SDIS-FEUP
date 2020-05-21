@@ -33,7 +33,7 @@ public class MessageSender {
             ObjectOutputStream outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
             outToServer.writeObject(message);
         } catch (Exception e) {
-            System.out.println("Error in SSL Conection");
+            System.out.println("Error in SSL Connection");
             return false;
         }
         return true;

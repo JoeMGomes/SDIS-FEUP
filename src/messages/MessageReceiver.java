@@ -2,23 +2,20 @@ package src.messages;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
 
-import src.CLI.Peer;
-
 public class MessageReceiver implements Runnable {
 
     private SSLServerSocket serverSocket;
     private int port;
     private ScheduledExecutorService executor;
+    private boolean closed = false;
 
     public MessageReceiver(int port) {
         this.port = port;
@@ -60,7 +57,7 @@ public class MessageReceiver implements Runnable {
         Object receivedMessage = null;
         SSLSocket clientSocket = null;
 
-        while (true) {
+        while (!closed) {
 
             receivedMessage = null;
             clientSocket = null;
@@ -68,8 +65,13 @@ public class MessageReceiver implements Runnable {
             try {
                 clientSocket = (SSLSocket) serverSocket.accept();
             } catch (IOException e) {
-                System.out.println("Error accepting client socket");
-                e.printStackTrace();
+                if (closed) {
+                    System.out.println("Socket is closed.");
+                    break;
+                } else {
+                    System.out.println("Error accepting client socket.");
+                    e.printStackTrace();
+                }
             }
 
             ObjectInputStream inputStream = null;
@@ -77,8 +79,7 @@ public class MessageReceiver implements Runnable {
             try {
                 inputStream = new ObjectInputStream(clientSocket.getInputStream());
             } catch (IOException e) {
-                System.out.println("Error getting clinet input stream.");
-                e.printStackTrace();
+                System.out.println("Error getting client input stream.");
             }
             if (clientSocket != null) {
                 if (inputStream != null) {
@@ -87,31 +88,27 @@ public class MessageReceiver implements Runnable {
                         receivedMessage = inputStream.readObject();
                     } catch (ClassNotFoundException e) {
                         System.out.println("Error reading message (Class Not Found)");
-                        e.printStackTrace();
                     } catch (IOException e) {
                         System.out.println("Error reading message (IOException)");
-                        e.printStackTrace();
                     }
                 }
             }
 
             Message e = (Message) receivedMessage;
-            Peer.log("Received from " + e.getSender().getIp() + ':' + e.getSender().getPort());
-            
-            // try {
-            // // TODO Por isto num thread
+
             executor.schedule(new Thread(() -> e.handle()), 0, TimeUnit.SECONDS);
-
-            //     handle1.get();
-            // } catch (InterruptedException e1) {
-
-            //     Exception a = (Exception) e1.getCause();
-            //     a.printStackTrace();
-            // } catch (ExecutionException e1) {
-            //     Exception a = (Exception) e1.getCause();
-            //     a.printStackTrace();
-            // }
         }
 
+    }
+
+    public void closeSocket() {
+        closed = true;
+        System.out.println("Closing receiver socket...");
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

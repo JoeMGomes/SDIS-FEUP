@@ -21,7 +21,8 @@ public class ClientDeleteMessage extends Message {
 
         if(Peer.chordNode.getPredecessor() != null && Utils.isBetween(Peer.chordNode.getPredecessor().getHashKey(), Peer.chordNode.getNodeHash(),this.key,false)){
             //Handle it 
-            DeleteMessage delete = new DeleteMessage(null, 0, null ,getSender() , this.key);
+            ChordInfo self = Peer.chordNode.getNodeInfo();
+            DeleteMessage delete = new DeleteMessage(self.getIp(), self.getPort(), getSender() ,getSender() , this.key);
             delete.handle();
 
         } else{

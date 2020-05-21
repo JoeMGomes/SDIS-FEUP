@@ -9,6 +9,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import src.Utils;
 import src.chord.ChordInfo;
 import src.chord.ChordNode;
 import src.chord.FixFingers;
@@ -49,18 +50,18 @@ public class Peer {
         stabilize = new Stabilize();
         receiver = new MessageReceiver(portAssigned);
 
-        chordNode = new ChordNode(knownPeer, "127.0.0.1", receiver.getPort());
+        chordNode = new ChordNode(knownPeer, Utils.getOwnIP(), receiver.getPort());
         fileManager = new FileManager(Integer.toString(chordNode.getNodeHash()));
 
         System.out.println("Initiating Peer: ");
         System.out.println(chordNode.getNodeInfo().toString());
-
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
         ScheduledFuture<?> handle1 = executor.schedule(receiver, 0, TimeUnit.SECONDS);
         ScheduledFuture<?> handle2 = executor.scheduleAtFixedRate(Peer.fixFingers, 0, 500, TimeUnit.MILLISECONDS);
         ScheduledFuture<?> handle3 = executor.scheduleAtFixedRate(Peer.stabilize, 0, 500, TimeUnit.MILLISECONDS);
 
+        Runtime.getRuntime().addShutdownHook(new Thread(Peer::shutdown));
     }
 
     public static void setMaxSpace(int newSpace) {
@@ -68,10 +69,16 @@ public class Peer {
         if (newSpace < usedSpace.get()) {
             fileManager.deleteUntilMaxSpace(newSpace);
         }
-        //Sets new max space
+        // Sets new max space
         maxSpace.set(newSpace);
     }
 
+    public static void shutdown() {
+        setMaxSpace(0);
+
+        Peer.receiver.closeSocket();
+        System.out.println("\nGracefully exiting peer " + Peer.chordNode.getNodeHash() + "...");
+    }
 
     public static void log(String string){
         if(debug){
@@ -83,4 +90,5 @@ public class Peer {
             }
         }
     }
+
 }
