@@ -20,11 +20,12 @@ public class Backup extends Message {
 
     @Override
     public void handle() {
-       
-        //If there is not enough space
+    
         if (Peer.maxSpace.get() < (Peer.usedSpace.get() + content.length)) {
+            //If there is not enough space
             Peer.forwarded.add(key);
         }else{
+            //Write to disk
             Peer.fileManager.write(Integer.toString(this.key), this.content);
             Peer.usedSpace.getAndAdd(content.length);
             this.repDegree -= 1;
@@ -32,14 +33,16 @@ public class Backup extends Message {
         
         //If replication degree not achieved
         if(this.repDegree > 0){
-            //Return to client with replication degree not reached
+            //If has been to every Peer
             if (getSender().getHashKey() == Peer.chordNode.getNodeHash()) {
+                //Return to client with replication degree not reached
                 Message message = new BackupReturnMessage(client.getIp(), client.getPort(), Peer.chordNode.getNodeInfo(), this.repDegree);
                 MessageSender sender = new MessageSender(message);
                 sender.send();
                 return;
             }
 
+            //Replicate the file forward in the ring
             ChordInfo successor = Peer.chordNode.getSuccessor(0);
             Message message = new Backup(successor.getIp(), successor.getPort(), getSender(), this.client, this.key, this.content, this.repDegree);
             MessageSender sender = new MessageSender(message);
@@ -50,6 +53,5 @@ public class Backup extends Message {
             MessageSender sender = new MessageSender(message);
             sender.send();
         }
-        
     }
 }

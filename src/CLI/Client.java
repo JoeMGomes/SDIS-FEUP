@@ -29,7 +29,7 @@ public class Client {
         receiver = new MessageReceiver(0);
         int portAssigned = receiver.getPort();
         info = new ChordInfo(Utils.getOwnIP(), portAssigned);
-        executor = Executors.newScheduledThreadPool(10);
+        executor = Executors.newScheduledThreadPool(1);
         executor.schedule(receiver, 0, TimeUnit.SECONDS);
     }
 

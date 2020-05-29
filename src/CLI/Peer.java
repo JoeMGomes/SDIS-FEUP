@@ -56,10 +56,10 @@ public class Peer {
         System.out.println("Initiating Peer: ");
         System.out.println(chordNode.getNodeInfo().toString());
 
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
-        ScheduledFuture<?> handle1 = executor.schedule(receiver, 0, TimeUnit.SECONDS);
-        ScheduledFuture<?> handle2 = executor.scheduleAtFixedRate(Peer.fixFingers, 0, 500, TimeUnit.MILLISECONDS);
-        ScheduledFuture<?> handle3 = executor.scheduleAtFixedRate(Peer.stabilize, 0, 500, TimeUnit.MILLISECONDS);
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
+        executor.schedule(receiver, 0, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(Peer.fixFingers, 0, 500, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(Peer.stabilize, 0, 500, TimeUnit.MILLISECONDS);
 
         Runtime.getRuntime().addShutdownHook(new Thread(Peer::shutdown));
     }

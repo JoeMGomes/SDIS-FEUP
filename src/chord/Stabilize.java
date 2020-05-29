@@ -21,7 +21,5 @@ public class Stabilize implements Runnable{
             Peer.chordNode.removeSuccessor(0);
         }
         
-        //if (successor.getHashKey() == Peer.chordNode.getNodeHash()) return;
-        
     }
 }

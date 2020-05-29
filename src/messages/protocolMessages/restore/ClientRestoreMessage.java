@@ -20,11 +20,11 @@ public class ClientRestoreMessage extends Message {
     @Override
     public void handle() {
 
-        //Se for o peer responsavel pela key
+        //If is the Peer responsible for the key
         if(Peer.chordNode.getPredecessor() != null && Utils.isBetween(Peer.chordNode.getPredecessor().getHashKey(), Peer.chordNode.getNodeHash(),key,false)){
 
             if(Peer.fileManager.fileExists(Integer.toString(this.key))){
-
+                // Send to client
                 Peer.fileManager.readAndRestore(Integer.toString(this.key), getSender());
 
             }else if(Peer.forwarded.contains(this.key)){
@@ -35,12 +35,14 @@ public class ClientRestoreMessage extends Message {
                 MessageSender sender = new MessageSender(message);
                 sender.send();
             } else {
+                //Error message
                 RestoreReturnMessage message = new RestoreReturnMessage(getSender().getIp(), getSender().getPort(), Peer.chordNode.getNodeInfo(), -1, this.key, null);
                 MessageSender sender = new MessageSender(message);
                 sender.send();
                 return;
             }
         } else {
+            //Find Responsible
             ChordInfo n1 = Peer.chordNode.closestPrecedingNode(this.key);
             FindRestore message = new FindRestore(n1.getIp(), n1.getPort(), getSender(), this.key);
             MessageSender sender = new MessageSender(message);
