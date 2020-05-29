@@ -41,6 +41,7 @@ public class Client {
 
     /**
      * first function that executes when Client starts running
+     * 
      * @param args
      */
     public static void main(String[] args) {
@@ -58,8 +59,8 @@ public class Client {
             targetPort = Integer.parseInt(args[1]);
             client.target = new ChordInfo(targetIP, targetPort);
         } else {
-            System.out.println("Bad Args, exiting");
-            System.exit(0);
+            System.out.println("Bad arguments, exiting...");
+            System.exit(-1);
         }
 
         // checks what is the protocol that we want to execute on the peer
@@ -68,15 +69,32 @@ public class Client {
             String op = args[2].toUpperCase();
             switch (op) {
                 case "BACKUP":
+                    if (args.length != 5) {
+                        System.out.println("Bad arguments, exiting...");
+                        System.exit(-1);
+                    }
                     client.backup(args[3], Integer.parseInt(args[4]));
                     break;
                 case "DELETE":
+                    if (args.length != 4) {
+                        System.out.println("Bad arguments, exiting...");
+                        System.exit(-1);
+
+                    }
                     client.delete(args[3]);
                     break;
                 case "RESTORE":
+                    if (args.length != 4) {
+                        System.out.println("Bad arguments, exiting...");
+                        System.exit(-1);
+                    }
                     client.restore(args[3]);
                     break;
                 case "RECLAIM":
+                    if (args.length != 4) {
+                        System.out.println("Bad arguments, exiting...");
+                        System.exit(-1);
+                    }
                     client.reclaim(Integer.parseInt(args[3]));
                     break;
                 case "STATE":
@@ -84,7 +102,7 @@ public class Client {
                     break;
                 default:
                     System.out.println("Unknown protocol, exiting..");
-                    return;
+                    System.exit(-1);
             }
         } catch (NullPointerException e) {
             System.out.println("Bad arguments, exiting...");
@@ -100,7 +118,8 @@ public class Client {
 
     /**
      * executes the backup protocol in the given peer
-     * @param filePath - file to backup
+     * 
+     * @param filePath  - file to backup
      * @param repDegree - replication degree of the file
      */
     public void backup(String filePath, int repDegree) {
@@ -149,6 +168,7 @@ public class Client {
 
     /**
      * executes the reclaim protocol in thje given peer
+     * 
      * @param space - ne max space for the peer\
      */
     public void reclaim(int space) {
@@ -163,8 +183,8 @@ public class Client {
     }
 
     /**
-     * executes the state protocol of the given peer
-     * prints in the console the state of the peer with all of its relevant informations
+     * executes the state protocol of the given peer prints in the console the state
+     * of the peer with all of its relevant informations
      */
     public void state() {
         GetStateMessage message = new GetStateMessage(this.target.getIp(), this.target.getPort(), this.info);
@@ -177,15 +197,17 @@ public class Client {
 
     /**
      * executes the restore protocol of a given file, asked to a given peer
+     * 
      * @param filePath - file to be restored
      */
     public void restore(String filePath) {
 
         int fileKey = getFileHash(filePath);
 
-        ClientRestoreMessage message = new ClientRestoreMessage(this.target.getIp(), this.target.getPort(), this.info, fileKey);
+        ClientRestoreMessage message = new ClientRestoreMessage(this.target.getIp(), this.target.getPort(), this.info,
+                fileKey);
         MessageSender sender = new MessageSender(message);
-        if(!sender.send()){
+        if (!sender.send()) {
             System.out.println("Could not contact requested peer. Exiting...");
             System.exit(-1);
         }
@@ -193,15 +215,17 @@ public class Client {
 
     /**
      * executes the delete protocol of a file
+     * 
      * @param filePath - file to be deleted
      */
     public void delete(String filePath) {
 
         int fileKey = getFileHash(filePath);
-    
-        ClientDeleteMessage message = new ClientDeleteMessage(this.target.getIp(), this.target.getPort(), this.info, fileKey);
+
+        ClientDeleteMessage message = new ClientDeleteMessage(this.target.getIp(), this.target.getPort(), this.info,
+                fileKey);
         MessageSender sender = new MessageSender(message);
-        if(!sender.send()){
+        if (!sender.send()) {
             System.out.println("Could not contact requested peer. Exiting...");
             System.exit(-1);
         }
@@ -209,10 +233,11 @@ public class Client {
 
     /**
      * calculates the hash of a given file using metadata and its name
+     * 
      * @param filePath - file to be hashed
      * @return the hash of the file
      */
-    public int getFileHash(String filePath){
+    public int getFileHash(String filePath) {
         String toHash = new String();
         int fileKey = -1;
         try {
