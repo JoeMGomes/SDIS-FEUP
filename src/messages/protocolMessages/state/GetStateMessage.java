@@ -17,7 +17,7 @@ public class GetStateMessage extends Message {
         try{
             Peer.log("Sending STATE message to " + getSender().getPort());
             ReturnStateMessage message = new ReturnStateMessage(getSender().getIp(), getSender().getPort(),
-            Peer.chordNode.getNodeInfo(), Peer.chordNode, Peer.usedSpace.get(), Peer.maxSpace.get(), Peer.forwarded);
+            Peer.chordNode.getNodeInfo(), Peer.chordNode, Peer.usedSpace.get(), Peer.maxSpace.get(), Peer.forwarded, Peer.fileManager.getAllKeys());
             MessageSender sender = new MessageSender(message);
             sender.send();
         } catch(Exception e){

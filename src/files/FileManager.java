@@ -201,4 +201,15 @@ public class FileManager {
         }
         return stored;
     }
+
+    public List<Integer> getAllKeys() {
+        File folder = new File(rootFolder);
+        File[] files = folder.listFiles();
+        List<Integer> stored = new ArrayList<>();
+
+        for (File file : files) {
+            stored.add(Integer.parseInt(file.getName()));
+        }
+        return stored;
+    }
 }

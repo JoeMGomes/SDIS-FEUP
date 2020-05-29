@@ -11,13 +11,15 @@ public class ReturnStateMessage extends Message {
     private ChordNode info;
     int maxSpace, usedSpace;
     List<Integer> forwardingTable;
+    List<Integer> stored;
 
-    public ReturnStateMessage(String ipAddress, int port, ChordInfo sender, ChordNode info, int usedSpace, int maxSpace, List<Integer> forwardingTable) {
+    public ReturnStateMessage(String ipAddress, int port, ChordInfo sender, ChordNode info, int usedSpace, int maxSpace, List<Integer> forwardingTable, List<Integer> stored) {
         super(ipAddress, port, sender);
         this.info = info;
         this.usedSpace = usedSpace;
         this.maxSpace = maxSpace;
         this.forwardingTable = forwardingTable;
+        this.stored = stored;
     }
 
     @Override
@@ -57,7 +59,11 @@ public class ReturnStateMessage extends Message {
             returnString += "\n--- Aplication Information ---\n";
             returnString += "Max Space: " + maxSpace + "\n";
             returnString += "Used Space: " + usedSpace + "\n\n";
-            returnString += "Forwarded Files:\n";
+            returnString += "Stored Files:\n";
+            for (Integer k : this.stored) {
+                returnString += "\tFile: " + k + "\n";
+            }
+            returnString += "\nForwarded Files:\n";
             for (Integer k : this.forwardingTable) {
                 returnString += "\tFile: " + k + "\n";
             }

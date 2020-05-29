@@ -17,6 +17,9 @@ import src.messages.protocolMessages.restore.*;
 import src.messages.protocolMessages.delete.*;
 import src.messages.*;
 
+/**
+ * class that works as an interface to comunicate to Peer when executing
+ */
 public class Client {
 
     public static MessageReceiver receiver;
@@ -25,6 +28,9 @@ public class Client {
     ScheduledExecutorService executor;
     public static int origRepDegree;
 
+    /**
+     * constructor, initializes the receiver socket
+     */
     Client() {
         receiver = new MessageReceiver(0);
         int portAssigned = receiver.getPort();
@@ -33,6 +39,10 @@ public class Client {
         executor.schedule(receiver, 0, TimeUnit.SECONDS);
     }
 
+    /**
+     * first function that executes when Client starts running
+     * @param args
+     */
     public static void main(String[] args) {
 
         Client client = new Client();
@@ -42,6 +52,7 @@ public class Client {
         int targetPort = 0;
         String targetIP = "";
 
+        // parses arguments passed to the program
         if (args.length >= 2) {
             targetIP = args[0];
             targetPort = Integer.parseInt(args[1]);
@@ -50,6 +61,9 @@ public class Client {
             System.out.println("Bad Args, exiting");
             System.exit(0);
         }
+
+        // checks what is the protocol that we want to execute on the peer
+        // and calls the respective function
         try {
             String op = args[2].toUpperCase();
             switch (op) {
@@ -77,8 +91,6 @@ public class Client {
             return;
         }
 
-        // }
-
     }
 
     /**
@@ -86,6 +98,11 @@ public class Client {
      * RESTORE file client ip port RECLAIM space client ip port STATE
      */
 
+    /**
+     * executes the backup protocol in the given peer
+     * @param filePath - file to backup
+     * @param repDegree - replication degree of the file
+     */
     public void backup(String filePath, int repDegree) {
 
         if (repDegree < 1 || repDegree > 9) {
@@ -130,6 +147,10 @@ public class Client {
 
     }
 
+    /**
+     * executes the reclaim protocol in thje given peer
+     * @param space - ne max space for the peer\
+     */
     public void reclaim(int space) {
 
         // Request reclaim
@@ -141,6 +162,10 @@ public class Client {
         }
     }
 
+    /**
+     * executes the state protocol of the given peer
+     * prints in the console the state of the peer with all of its relevant informations
+     */
     public void state() {
         GetStateMessage message = new GetStateMessage(this.target.getIp(), this.target.getPort(), this.info);
         MessageSender sender = new MessageSender(message);
@@ -150,6 +175,10 @@ public class Client {
         }
     }
 
+    /**
+     * executes the restore protocol of a given file, asked to a given peer
+     * @param filePath - file to be restored
+     */
     public void restore(String filePath) {
 
         int fileKey = getFileHash(filePath);
@@ -162,6 +191,10 @@ public class Client {
         }
     }
 
+    /**
+     * executes the delete protocol of a file
+     * @param filePath - file to be deleted
+     */
     public void delete(String filePath) {
 
         int fileKey = getFileHash(filePath);
@@ -174,6 +207,11 @@ public class Client {
         }
     }
 
+    /**
+     * calculates the hash of a given file using metadata and its name
+     * @param filePath - file to be hashed
+     * @return the hash of the file
+     */
     public int getFileHash(String filePath){
         String toHash = new String();
         int fileKey = -1;
