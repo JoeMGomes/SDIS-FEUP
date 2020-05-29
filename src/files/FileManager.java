@@ -71,7 +71,7 @@ public class FileManager {
         Path path = Paths.get(rootFolder, name);
 
         AsyncRead.read(path, new CompletionHandler<Integer,ByteBuffer>(){
-        
+            //If reading fails
             @Override
             public void failed(Throwable arg0, ByteBuffer arg1) {
                 try {
@@ -81,15 +81,15 @@ public class FileManager {
                 }
                 System.out.println("Failed backup, deleted " + name);
             }
-        
+            //If reading succeeds
             @Override
             public void completed(Integer arg0, ByteBuffer arg1) {
                 ChordInfo successor = Peer.chordNode.getSuccessor(0);
-
+                //Backup file in successor
                 Message message = new ReclaimBackupMessage(successor.getIp(), successor.getPort(), Peer.chordNode.getNodeInfo(), Integer.parseInt(name), arg1.array());
                 MessageSender sender = new MessageSender(message);
                 sender.send();
-
+                //Delete the file
                 try {
                     Files.delete(path);
                 } catch (Exception e) {
@@ -139,17 +139,18 @@ public class FileManager {
     public void deleteUntilMaxSpace(int space) {
         File folder = new File(rootFolder);
         File[] files = folder.listFiles();
-
+        //Iterate through all files in the local file system
         for (File file : files) {
             System.out.println("Peer: " + Peer.chordNode.getNodeInfo().getPort() + 
                                 "\nnew max Space: " + space +
                                 "\nused space: " + Peer.usedSpace.get());
+            //Break if desired usedSpace is reached
             if (space != 0 && space >= Peer.usedSpace.get()) {
                 break;
             }
 
             Peer.usedSpace.getAndAdd((int) -file.length());
-
+            //Backs up the file in the successor and Deletes the local copy
             String deleted = file.getName();
             this.readAndBackup(deleted);
 

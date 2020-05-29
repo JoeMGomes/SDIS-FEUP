@@ -56,7 +56,7 @@ public class ReturnStateMessage extends Message {
                 i++;
             }
 
-            returnString += "\n--- Aplication Information ---\n";
+            returnString += "\n--- Application Information ---\n";
             returnString += "Max Space: " + maxSpace + "\n";
             returnString += "Used Space: " + usedSpace + "\n\n";
             returnString += "Stored Files:\n";

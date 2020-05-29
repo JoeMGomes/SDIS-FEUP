@@ -20,12 +20,13 @@ public class ClientDeleteMessage extends Message {
     public void handle() {
 
         if(Peer.chordNode.getPredecessor() != null && Utils.isBetween(Peer.chordNode.getPredecessor().getHashKey(), Peer.chordNode.getNodeHash(),this.key,false)){
-            //Handle it 
+            //Handle it if it is the responsible Peer
             ChordInfo self = Peer.chordNode.getNodeInfo();
             DeleteMessage delete = new DeleteMessage(self.getIp(), self.getPort(), getSender() ,getSender() , this.key);
             delete.handle();
 
         } else{
+            //Find the responsible Peer
             ChordInfo n1 = Peer.chordNode.closestPrecedingNode(this.key);
             FindDelete message = new FindDelete(n1.getIp(), n1.getPort(), getSender(), this.key);
             MessageSender sender = new MessageSender(message);

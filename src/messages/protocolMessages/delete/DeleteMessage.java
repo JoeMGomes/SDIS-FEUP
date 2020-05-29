@@ -20,11 +20,12 @@ public class DeleteMessage extends Message {
     public void handle() {
 
         if (Peer.fileManager.fileExists(Integer.toString(this.key)) || Peer.forwarded.contains(this.key)) {
+            //If the file exists locally or its key is in the forwarded array
             Peer.fileManager.delete(Integer.toString(this.key));
 
             if (Peer.forwarded.contains(this.key))
                 Peer.forwarded.remove(Integer.valueOf(this.key));
-
+            //Send Delete Request to successor
             DeleteMessage message = new DeleteMessage(Peer.chordNode.getSuccessor(0).getIp(),
                     Peer.chordNode.getSuccessor(0).getPort(), getSender(), this.client, this.key);
             MessageSender sender = new MessageSender(message);
@@ -36,6 +37,5 @@ public class DeleteMessage extends Message {
             MessageSender sender = new MessageSender(message);
             sender.send();
         }
-
     }
 }

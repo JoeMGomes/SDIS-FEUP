@@ -25,11 +25,12 @@ public class ClientBackupMessage extends Message {
 
         //Se for o peer responsavel pela key
         if(Peer.chordNode.getPredecessor() != null && Utils.isBetween(Peer.chordNode.getPredecessor().getHashKey(), Peer.chordNode.getNodeHash(),key,false)){
-            //Handle it 
-            ChordInfo self = Peer.chordNode.getNodeInfo();
-            Backup backup = new Backup(self.getIp(), self.getPort(), getSender() ,
-                            getSender() , this.key, this.content, this.repDegree);
-            backup.handle();
+
+            ChordInfo successor = Peer.chordNode.getSuccessor(0);
+            Backup message = new Backup(successor.getIp(), successor.getPort(), Peer.chordNode.getNodeInfo(), getSender(), key, content, repDegree);
+            MessageSender sender = new MessageSender(message);
+            sender.send();
+            Peer.forwarded.add(key);
 
         } else{
             ChordInfo n1 = Peer.chordNode.closestPrecedingNode(this.key);
