@@ -42,11 +42,13 @@ bash client.sh <known_peer_IP_address> <known_peer_port> DELETE <file_path>
 ```
 
 **Reclaim**
+
 ```cmd
 bash client.sh <known_peer_IP_address> <known_peer_port> RECLAIM <max_disk_space>
 ```
 
 **State**
+
 ```cmd
 bash client.sh <known_peer_IP_address> <known_peer_port> STATE
 ```
