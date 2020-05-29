@@ -15,7 +15,9 @@ public abstract class Message implements Serializable {
         this.port = port;
         this.sender = sender;
     }
-
+    
+    public abstract void handle();
+    
     public String getIpAddress() {
         return this.ipAddress;
     }
@@ -40,6 +42,5 @@ public abstract class Message implements Serializable {
         this.sender = sender;
     }
 
-    public abstract void handle();
     
 }
