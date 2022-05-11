@@ -1,5 +1,15 @@
 # SDIS T2 G22
 
+This project was developed for the Course Unit of Distributed Systems and this report has the main goal of describing and explaining, in detail, the implementation of the system and the reason behind most design choices.
+The implemented system is able to execute 5 main protocols:
+- Backup - Send a file to the system and store it with a specified replication degree
+- Restore - Retrieve a file from the system
+-  Reclaim - Set a Peer’s max space to limit its maximum capacity (in bytes)
+-  Delete - Delete all copies of a file from the system
+-  State - Retrieve all relevant information about a Peer  
+
+The architecture on which the system was built is a **Serverless Peer-to-Peer** architecture based on the **Chord** algorithm along with its fault-tolerant features. All Peers and Clients communicate through TCP sockets using **JSSE SSLSockets** to ensure security and reliability and make use of threads to ensure maximum scalability.  
+
 ### Compiling
 Run the following bash script on the root directory:
 
